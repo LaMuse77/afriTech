@@ -1,0 +1,768 @@
+// =============================================================
+//  Dashboard — Africa Fintech Inside
+//  Source SCSS. Compilé vers ../css/dashboard.css :
+//    sass web/assets/sass/dashboard.scss web/assets/css/dashboard.css
+// =============================================================
+
+// ---------- Variables ----------
+
+
+@use 'variables' as *;
+@use 'varForDash' as *;
+@use "sass:color";
+
+
+
+// Exposées en variables CSS pour rester accessibles au JS / inline.
+:root {
+  --primary: #{$primary};
+  --dark:    #{$dark};
+  --card:    #{$card};
+  --text:    #{$text};
+  --muted:   #{$muted};
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #E4EBE7;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+}
+
+// ---------- Sidebar ----------
+.sidebar {  
+  width: $sidebar-w;
+  background: #E4EBE7;
+  border-right: 1px solid rgba($primary, 0.1);
+  padding: 2rem 1.5rem;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.logo-dashboard {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    height: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba($primary, 0.3), 0 4px 16px rgba($primary, 0.15);
+    transition: transform 0.4s $ease;
+  }
+
+  &:hover img {
+    transform: rotate(-6deg) scale(1.05);
+  }
+}
+
+.nav-menu {
+  list-style: none;
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #a5b4fc;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: color 0.3s, background 0.3s, transform 0.2s;
+    cursor: pointer;
+
+    i {
+      width: 20px;
+      text-align: center;
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+
+    &:hover {
+      background: rgba($primary, 0.08);
+      color: white;
+      transform: translateX(4px);
+
+      i { transform: scale(1.15); }
+    }
+
+    &.active {
+      background: rgba($primary, 0.15);
+      color: white;
+
+      // Barre d'accent verticale sur l'entrée active
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: var(--primary);
+        box-shadow: 0 0 12px var(--primary);
+      }
+    }
+  }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+// ---------- Main content ----------
+.main-content {
+  margin-left: $sidebar-w;
+  flex: 1;
+  padding: 2rem;
+  width: calc(100% - #{$sidebar-w});
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: $BgForBox;  
+  padding: 1rem 2rem;
+  border-radius: $radius;
+  //backdrop-filter: blur(10px);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.welcome {
+  font-size: 1.8rem;
+  font-weight: 700;
+
+  span { color: var(--primary); }
+}
+
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-wrapper {
+  position: relative;
+
+  input {
+    background: #1e2937;
+    border: none;
+    padding: 10px 16px 10px 40px;
+    border-radius: 9999px;
+    width: 320px;
+    max-width: 100%;
+    color: white;
+  }
+
+  i {
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    color: #64748b;
+  }
+}
+
+.icon-bell {
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #a5b4fc;
+  transition: color 0.3s, transform 0.3s;
+
+  &:hover {
+    color: var(--primary);
+    transform: rotate(12deg);
+  }
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  //background: linear-gradient(135deg, #00d4ff, #7c3aed);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba($primary, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s;
+
+  &:hover { transform: scale(1.08); }
+}
+
+// ---------- Section switching ----------
+.dashboard-section {
+  display: none;
+
+  &.active {
+    display: block;
+    animation: fadeIn 0.45s $ease;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Apparition en cascade des éléments (piloté par le JS via --delay)
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: revealUp 0.6s $ease forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes revealUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; opacity: 1; transform: none; }
+  .dashboard-section.active { animation: none; }
+}
+
+// ---------- Stats ----------
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  position: relative;
+  //background: linear-gradient(160deg, #16203505 0%, var(--card) 100%);
+  background-color: $BgForBox;
+  border-radius: $radius;
+  padding: 1.75rem;
+  border: 1px solid rgba($primary, 0.20);
+  overflow: hidden;
+  transition: transform 0.35s $ease, border-color 0.35s, box-shadow 0.35s;
+
+  // Barre d'accent colorée en haut de chaque carte
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent, var(--primary));
+    opacity: 0.9;
+  }
+
+  // Halo lumineux discret
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 160px;
+    height: 160px;
+    //background: radial-gradient(circle, var(--accent, var(--primary)) 0%, transparent 70%);
+    opacity: 0.08;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent, var(--primary));
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+
+    &::after { opacity: 0.18; }
+  }
+
+  > p:first-child {
+   // color: var(--muted);
+    margin-bottom: 0.5rem;
+    font-size: 0 .95rem;
+  }
+
+  // Modificateurs de couleur d'accent
+  &--success { --accent: #{$success}; }
+  &--warning { --accent: #{$warning}; }
+  &--info    { --accent: #{$primary}; }
+  &--purple  { --accent: #{$purple}; }
+}
+
+.stat-value {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--accent, var(--primary));
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.stat-hint {
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+  color: var(--accent, var(--primary));
+}
+
+// ---------- Sections & grids ----------
+.section-title {
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.content-card {
+  background: $BgForBox;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius;
+  overflow: hidden;
+  transition: transform 0.35s $ease, box-shadow 0.35s, border-color 0.35s;
+
+  &:hover {
+    transform: translateY(-8px);
+    border-color: rgba($primary, 0.35);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+
+    .thumbnail { transform: scale(1.06); }
+    .thumbnail::after { opacity: 0.85; }
+    .play-overlay {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+}
+
+.thumbnail {
+  height: 180px;
+  // La vignette est fournie par le JS via la variable --thumb.
+  background-image: var(--thumb);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s ease;
+
+  // Voile sombre + play qui apparaît au survol
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 15, 28, 0.6), transparent 60%);
+    opacity: 0.5;
+    transition: opacity 0.35s;
+  }
+}
+
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  width: 54px;
+  height: 54px;
+  background: rgba($primary, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0f1c;
+  font-size: 1.3rem;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.35s, transform 0.35s $ease;
+  box-shadow: 0 0 0 8px rgba($primary, 0.18);
+}
+
+.content-info {
+  padding: 1.25rem;
+
+  h3 {
+    margin: 12px 0 8px;
+    font-size: 1.1rem;
+  }
+
+  .meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+.badge {
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  // Couleur de fond fournie par le JS via --badge-color.
+  background: var(--badge-color, #64748b);
+}
+
+// ---------- Events ----------
+.events-list {
+  background: var(--card);
+  border-radius: $radius;
+  padding: 1.5rem;
+}
+
+.events-list-footer {
+  margin-top: 2rem;
+}
+
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0.75rem;
+  margin: 0 -0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  gap: 1rem;
+  transition: background 0.3s;
+
+  &:hover { background: rgba($primary, 0.05); }
+  &:last-child { border-bottom: none; }
+
+  small { color: var(--muted); }
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.event-status {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-registered { color: $success; }
+.status-early_bird { color: $warning; }
+
+// ---------- Buttons ----------
+.btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00d4ff 0%, #0091ff 100%);
+  color: #0a0f1c;
+  box-shadow: 0 4px 16px rgba($primary, 0.25);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba($primary, 0.4);
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+.btn-watch {
+  margin-top: 1rem;
+}
+
+// Bouton secondaire discret (annuler, modifier)
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba($primary, 0.4);
+  }
+}
+
+// Bouton destructif (supprimer)
+.btn-danger {
+  background: rgba($danger, 0.12);
+  color: $danger;
+  border: 1px solid rgba($danger, 0.4);
+
+  &:hover {
+    background: rgba($danger, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+// Déconnexion dans la sidebar
+.btn-logout {
+  color: $danger;
+}
+
+// ---------- Highlight card (newsletter) ----------
+.highlight-card {
+  margin-top: 3rem;
+  background: var(--card);
+  border-radius: $radius;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  p { color: var(--muted); }
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  color: var(--muted);
+  padding: 1rem 0;
+}
+
+// ---------- Profil ----------
+.profile-card {
+  background: var(--card);
+  border: 1px solid rgba($primary, 0.15);
+  border-radius: $radius;
+  padding: 1rem 1.75rem;
+  max-width: 620px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:last-child { border-bottom: none; }
+}
+
+.profile-label { color: var(--muted); }
+.profile-value { font-weight: 600; }
+
+// ---------- Toast ----------
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid rgba($primary, 0.3);
+  border-left: 4px solid var(--primary);
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  max-width: 360px;
+  transform: translateY(150%);
+  opacity: 0;
+  transition: transform 0.4s $ease, opacity 0.4s;
+  z-index: 2000;
+
+  &.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  i { color: var(--primary); }
+}
+
+// ---------- Responsive ----------
+@media (max-width: 992px) {
+  body { flex-direction: column; }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .two-col { grid-template-columns: 1fr; }
+  .search-wrapper input { width: 100%; }
+}
+
+// ---------- Login page ----------
+.login-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.login-card {
+  background: var(--card);
+  border: 1px solid rgba($primary, 0.15);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: min(420px, 100%);
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    background: #1e2937;
+    border: 1px solid transparent;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  textarea { resize: vertical; }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+}
+
+// ---------- Carte de création / édition d'événement (admin) ----------
+.event-create-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.event-create-head {
+  h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.form-error {
+  color: $danger;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
+  margin-bottom: 1rem;
+
+  // Variante succès (opération réussie)
+  &--success { color: $success; }
+}
+
+.form-switch {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
+
+  a {
+    color: #00E63C;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}

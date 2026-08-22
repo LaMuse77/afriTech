@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - Africa Fintech Inside</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <!-- Styles compilés depuis ../sass/dashboard.scss (sass ../sass/dashboard.scss ../css/dashboard.css) -->
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-dashboard">
+            <img src="../logo.jpeg" alt="AFI">
+            AFI Dashboard
+        </div>
+
+        <ul class="nav-menu">
+            <li><a data-section="home" class="active"><i class="fas fa-home"></i> Accueil</a></li>
+            <li><a data-section="contents"><i class="fas fa-play-circle"></i> Mes Contenus</a></li>
+            <li><a data-section="events"><i class="fas fa-calendar"></i> Événements</a></li>
+            <li><a data-section="community"><i class="fas fa-users"></i> Communauté</a></li>
+            <li><a data-section="profile"><i class="fas fa-user-circle"></i> Profil</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button id="logout-btn" class="btn btn-block btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="welcome">
+                Bonjour, <span id="welcome-name">…</span> 
+            </div>
+            <div class="top-bar-actions">
+                <div class="search-wrapper">
+                    <input type="text" placeholder="Rechercher un contenu...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <i class="fas fa-bell icon-bell"></i>
+                <div class="avatar" id="avatar">A</div>
+            </div>
+        </div>
+
+        <!-- ===== Section: Accueil ===== -->
+        <section id="section-home" class="dashboard-section active">
+            <div class="stats-grid">
+                <div class="stat-card stat-card--success">
+                    <p><i class="fas fa-circle-check"></i> Contenus terminés</p>
+                    <div class="stat-value" id="stat-contents" data-count="0">0</div>
+                    <p class="stat-hint">Progression</p>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <p><i class="fas fa-clock"></i> Heures de formation</p>
+                    <div class="stat-value" id="stat-hours" data-count="0" data-suffix="h">0h</div>
+                    <p class="stat-hint">Objectif : 60h/an</p>
+                </div>
+                <div class="stat-card stat-card--info">
+                    <p><i class="fas fa-calendar-check"></i> Événements</p>
+                    <div class="stat-value" id="stat-events" data-count="0">0</div>
+                    <p class="stat-hint">Participations</p>
+                </div>
+                <div class="stat-card stat-card--purple">
+                    <p><i class="fas fa-star"></i> Points Communauté</p>
+                    <div class="stat-value" id="stat-points" data-count="0">0</div>
+                    <p class="stat-hint">Classement membres</p>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div>
+                    <div class="section-title"><i class="fas fa-fire"></i> Recommandations pour vous</div>
+                    <div class="content-grid" id="recommendations">
+                        <p class="empty-state">Chargement des contenus…</p>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title"><i class="fas fa-calendar-alt"></i> Prochains événements</div>
+                    <div class="events-list" id="events-list">
+                        <p class="empty-state">Chargement…</p>
+                    </div>
+                    <div class="events-list-footer">
+                        <a href="#" class="btn btn-primary btn-block" data-section-link="events">Voir tous les événements</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-card">
+                <div>
+                    <h3>AFI Weekly — Dernière édition</h3>
+                    <p>Tendances réglementaires en Afrique de l'Ouest + Opportunités de levée de fonds</p>
+                </div>
+                <a href="#" class="btn btn-primary">Lire le rapport</a>
+            </div>
+        </section>
+
+        <!-- ===== Section: Mes Contenus ===== -->
+        <section id="section-contents" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-play-circle"></i> Tous les contenus</div>
+            <div class="content-grid" id="contents-full">
+                <p class="empty-state">Chargement des contenus…</p>
+            </div>
+        </section>
+
+        <!-- ===== Section: Événements ===== -->
+        <section id="section-events" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-calendar"></i> Tous les événements</div>
+
+            <!-- Création d'un événement -->
+            <div class="event-create-card" id="event-create-card">
+                <div class="event-create-head">
+                    <h3 id="event-form-title"><i class="fas fa-plus-circle"></i> Créer un événement</h3>
+                    <p id="event-form-subtitle">Il apparaîtra sur la landing et sera ouvert à la réservation.</p>
+                </div>
+                <form id="event-create-form" class="event-create-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ev-title">Titre *</label>
+                            <input type="text" id="ev-title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-badge">Badge</label>
+                            <input type="text" id="ev-badge" name="badge" placeholder="Networking, Annuel…">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ev-description">Description</label>
+                        <textarea id="ev-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ev-starts-at">Date & heure *</label>
+                            <input type="datetime-local" id="ev-starts-at" name="starts_at" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-location">Lieu</label>
+                            <input type="text" id="ev-location" name="location" placeholder="Abidjan, En ligne…">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ev-status">Statut</label>
+                            <select id="ev-status" name="status">
+                                <option value="open">Réservations ouvertes</option>
+                                <option value="early_bird">Early Bird</option>
+                                <option value="registered">Inscrit / complet</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-join-url">Lien (visio / billetterie)</label>
+                            <input type="url" id="ev-join-url" name="join_url" placeholder="https://…">
+                        </div>
+                    </div>
+                    <p id="event-create-feedback" class="form-error" role="status" aria-live="polite"></p>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="event-submit-btn">Publier l'événement</button>
+                        <button type="button" class="btn btn-ghost" id="event-cancel-btn" hidden>Annuler</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="events-list" id="events-full">
+                <p class="empty-state">Chargement…</p>
+            </div>
+        </section>
+
+        <!-- ===== Section: Communauté ===== -->
+        <section id="section-community" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-users"></i> Communauté</div>
+            <p class="empty-state">Espace communautaire à venir.</p>
+        </section>
+
+        <!-- ===== Section: Profil ===== -->
+        <section id="section-profile" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-user-circle"></i> Mon Profil</div>
+            <div class="profile-card" id="profile-card">
+                <p class="empty-state">Chargement du profil…</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            &copy; 2026 Africa Fintech Inside • Tableau de Bord Client
+        </footer>
+    </main>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script src="../js/dashboardApp.js"></script>
+</body>
+</html>
