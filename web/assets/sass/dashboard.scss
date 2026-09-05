@@ -4,16 +4,10 @@
 //    sass web/assets/sass/dashboard.scss web/assets/css/dashboard.css
 // =============================================================
 
-// ---------- Variables ----------
-
-
 @use 'variables' as *;
 @use 'varForDash' as *;
 @use "sass:color";
 
-
-
-// Exposées en variables CSS pour rester accessibles au JS / inline.
 :root {
   --primary: #{$primary};
   --dark:    #{$dark};
@@ -37,9 +31,9 @@ body {
 }
 
 // ---------- Sidebar ----------
-.sidebar {  
+.sidebar {
   width: $sidebar-w;
-  background: #E4EBE7;
+  background: #173c27;
   border-right: 1px solid rgba($primary, 0.1);
   padding: 2rem 1.5rem;
   height: 100vh;
@@ -61,21 +55,20 @@ body {
   img {
     height: 40px;
     border-radius: 8px;
-    box-shadow: 0 0 0 1px rgba($primary, 0.3), 0 4px 16px rgba($primary, 0.15);
-    transition: transform 0.4s $ease;
+    // box-shadow glow retirée
+    transition: transform 0.3s $ease;
   }
 
   &:hover img {
-    transform: rotate(-6deg) scale(1.05);
+    transform: scale(1.03); // rotation retirée (effet trop "template IA")
   }
 }
 
+// ---------- Liens de navigation (restaurés) ----------
 .nav-menu {
   list-style: none;
 
-  li {
-    margin-bottom: 0.5rem;
-  }
+  li { margin-bottom: 0.5rem; }
 
   a {
     position: relative;
@@ -83,32 +76,30 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    color: #a5b4fc;
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
-    border-radius: 12px;
-    transition: color 0.3s, background 0.3s, transform 0.2s;
+    border-radius: 10px;
+    transition: color 0.25s, background 0.25s;
     cursor: pointer;
 
     i {
       width: 20px;
       text-align: center;
       font-size: 1rem;
-      transition: transform 0.3s;
+      flex-shrink: 0;
     }
 
-    &:hover {
-      background: rgba($primary, 0.08);
-      color: white;
-      transform: translateX(4px);
+    > span:not(.nav-badge) { flex: 1; }
 
-      i { transform: scale(1.15); }
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
     }
 
     &.active {
-      background: rgba($primary, 0.15);
-      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
 
-      // Barre d'accent verticale sur l'entrée active
       &::before {
         content: "";
         position: absolute;
@@ -118,10 +109,91 @@ body {
         width: 3px;
         border-radius: 0 3px 3px 0;
         background: var(--primary);
-        box-shadow: 0 0 12px var(--primary);
+        // box-shadow glow retirée
       }
     }
   }
+}
+
+// ---------- Badges de navigation (EN DEV) ----------
+.nav-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-dev {
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+// ---------- Modal réservations (admin) ----------
+.reservations-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+
+    &.is-open { display: flex; }
+
+    &__overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+    }
+
+    &__dialog {
+        position: relative;
+        width: 100%;
+        max-width: 520px;
+        max-height: 80vh;
+        overflow-y: auto;
+        background: var(--card);
+        border: 1px solid rgba($primary, 0.15);
+        border-radius: $radius;
+        padding: 2rem;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    &__close {
+        position: absolute;
+        top: 1rem;
+        right: 1.1rem;
+        background: none;
+        border: none;
+        font-size: 1.7rem;
+        line-height: 1;
+        color: var(--muted);
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover { color: var(--primary); }
+    }
+
+    &__title { margin: 0 0 0.35rem; color: var(--primary); font-size: 1.3rem; }
+    &__sub { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.9rem; }
+}
+
+.reservation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 1rem;
+
+    &:last-child { border-bottom: none; }
+
+    small { color: var(--muted); display: block; margin-top: 2px; }
 }
 
 .sidebar-footer {
@@ -142,10 +214,9 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  background: $BgForBox;  
+  background: $BgForBox;
   padding: 1rem 2rem;
   border-radius: $radius;
-  //backdrop-filter: blur(10px);
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -184,34 +255,36 @@ body {
   }
 }
 
+// ---------- Icône cloche ----------
 .icon-bell {
   font-size: 1.4rem;
   cursor: pointer;
-  color: #a5b4fc;
-  transition: color 0.3s, transform 0.3s;
+  color: var(--muted); // était #a5b4fc
+  transition: color 0.25s;
 
   &:hover {
     color: var(--primary);
-    transform: rotate(12deg);
+    // rotation au hover retirée
   }
 }
 
+// ---------- Avatar ----------
 .avatar {
   width: 42px;
   height: 42px;
-  //background: linear-gradient(135deg, #00d4ff, #7c3aed);
-  color: #fff;
+  background: rgba($primary, 0.15);
+  color: var(--primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 4px 14px rgba($primary, 0.3);
+  // box-shadow colorée retirée
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.2s;
 
-  &:hover { transform: scale(1.08); }
+  &:hover { transform: scale(1.05); } // était 1.08
 }
 
 // ---------- Section switching ----------
@@ -229,7 +302,6 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// Apparition en cascade des éléments (piloté par le JS via --delay)
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -256,59 +328,38 @@ body {
 
 .stat-card {
   position: relative;
-  //background: linear-gradient(160deg, #16203505 0%, var(--card) 100%);
   background-color: $BgForBox;
   border-radius: $radius;
   padding: 1.75rem;
   border: 1px solid rgba($primary, 0.20);
   overflow: hidden;
-  transition: transform 0.35s $ease, border-color 0.35s, box-shadow 0.35s;
+  transition: transform 0.25s ease, border-color 0.25s;
 
-  // Barre d'accent colorée en haut de chaque carte
   &::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
     background: var(--accent, var(--primary));
     opacity: 0.9;
   }
-
-  // Halo lumineux discret
-  &::after {
-    content: "";
-    position: absolute;
-    top: -40%;
-    right: -20%;
-    width: 160px;
-    height: 160px;
-    //background: radial-gradient(circle, var(--accent, var(--primary)) 0%, transparent 70%);
-    opacity: 0.08;
-    transition: opacity 0.35s;
-    pointer-events: none;
-  }
+  // halo ::after retiré
 
   &:hover {
-    transform: translateY(-6px);
+    transform: translateY(-3px); // était -6px
     border-color: var(--accent, var(--primary));
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-
-    &::after { opacity: 0.18; }
+    // box-shadow glow retirée
   }
 
   > p:first-child {
-   // color: var(--muted);
     margin-bottom: 0.5rem;
-    font-size: 0 .95rem;
+    font-size: 0.95rem;
   }
 
-  // Modificateurs de couleur d'accent
   &--success { --accent: #{$success}; }
   &--warning { --accent: #{$warning}; }
   &--info    { --accent: #{$primary}; }
-  &--purple  { --accent: #{$purple}; }
+  &--purple  { --accent: #{$primary}; } // $purple retiré — voir note plus bas
 }
 
 .stat-value {
@@ -348,18 +399,18 @@ body {
 
 .content-card {
   background: $BgForBox;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: $radius;
   overflow: hidden;
-  transition: transform 0.35s $ease, box-shadow 0.35s, border-color 0.35s;
+  transition: transform 0.25s ease, border-color 0.25s;
 
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-4px); // était -8px
     border-color: rgba($primary, 0.35);
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+    // box-shadow glow retirée
 
-    .thumbnail { transform: scale(1.06); }
-    .thumbnail::after { opacity: 0.85; }
+    .thumbnail { transform: scale(1.03); } // était 1.06
+    .thumbnail::after { opacity: 0.6; }
     .play-overlay {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
@@ -369,7 +420,6 @@ body {
 
 .thumbnail {
   height: 180px;
-  // La vignette est fournie par le JS via la variable --thumb.
   background-image: var(--thumb);
   background-size: cover;
   background-position: center;
@@ -377,7 +427,6 @@ body {
   overflow: hidden;
   transition: transform 0.5s ease;
 
-  // Voile sombre + play qui apparaît au survol
   &::after {
     content: "";
     position: absolute;
@@ -400,12 +449,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0a0f1c;
+  color: #fff;
   font-size: 1.3rem;
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.35s, transform 0.35s $ease;
-  box-shadow: 0 0 0 8px rgba($primary, 0.18);
+  transition: opacity 0.3s, transform 0.3s $ease;
+  // box-shadow halo retirée
 }
 
 .content-info {
@@ -428,7 +477,6 @@ body {
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 9999px;
-  // Couleur de fond fournie par le JS via --badge-color.
   background: var(--badge-color, #64748b);
 }
 
@@ -452,7 +500,7 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   gap: 1rem;
-  transition: background 0.3s;
+  transition: background 0.25s;
 
   &:hover { background: rgba($primary, 0.05); }
   &:last-child { border-bottom: none; }
@@ -484,7 +532,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s;
+  transition: all 0.25s;
   border: none;
   cursor: pointer;
   font-family: inherit;
@@ -492,13 +540,13 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #00d4ff 0%, #0091ff 100%);
-  color: #0a0f1c;
-  box-shadow: 0 4px 16px rgba($primary, 0.25);
+  background: var(--primary); // était linear-gradient(#00d4ff, #0091ff)
+  color: #fff;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($primary, 0.4);
+    transform: translateY(-1px); // était -2px
+    background: color.adjust($primary, $lightness: -6%);
+    // box-shadow glow retirée
   }
 
   &:active { transform: translateY(0); }
@@ -518,7 +566,6 @@ body {
   margin-top: 1rem;
 }
 
-// Bouton secondaire discret (annuler, modifier)
 .btn-ghost {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text);
@@ -530,7 +577,6 @@ body {
   }
 }
 
-// Bouton destructif (supprimer)
 .btn-danger {
   background: rgba($danger, 0.12);
   color: $danger;
@@ -538,11 +584,10 @@ body {
 
   &:hover {
     background: rgba($danger, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
-// Déconnexion dans la sidebar
 .btn-logout {
   color: $danger;
 }
@@ -611,7 +656,7 @@ body {
   border-left: 4px solid var(--primary);
   padding: 14px 20px;
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); // adoucie
   max-width: 360px;
   transform: translateY(150%);
   opacity: 0;
@@ -748,7 +793,6 @@ body {
   min-height: 1.2rem;
   margin-bottom: 1rem;
 
-  // Variante succès (opération réussie)
   &--success { color: $success; }
 }
 
@@ -759,7 +803,7 @@ body {
   opacity: 0.85;
 
   a {
-    color: #00E63C;
+    color: var(--primary); // était #00E63C, vert néon hardcodé
     font-weight: 600;
     text-decoration: none;
 

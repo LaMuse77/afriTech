@@ -18,11 +18,38 @@
         </div>
 
         <ul class="nav-menu">
-            <li><a data-section="home" class="active"><i class="fas fa-home"></i> Accueil</a></li>
-            <li><a data-section="contents"><i class="fas fa-play-circle"></i> Mes Contenus</a></li>
-            <li><a data-section="events"><i class="fas fa-calendar"></i> Événements</a></li>
-            <li><a data-section="community"><i class="fas fa-users"></i> Communauté</a></li>
-            <li><a data-section="profile"><i class="fas fa-user-circle"></i> Profil</a></li>
+            <li>
+                <a data-section="home" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+            </li>
+            <li>
+                <a data-section="contents">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Mes Contenus</span>
+                </a>
+            </li>
+            <li>
+                <a data-section="events">
+                    <i class="fas fa-calendar"></i>
+                    <span>Événements</span>
+                </a>
+            </li>
+            <li>
+                <a data-section="community">
+                    <i class="fas fa-users"></i>
+                    <span>Communauté</span>
+                    <span class="nav-badge badge-dev">EN DEV</span>
+                </a>
+            </li>
+            <li>
+                <a data-section="profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profil</span>
+                    <span class="nav-badge badge-dev">EN DEV</span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">
@@ -184,6 +211,15 @@
                 <p class="empty-state">Chargement du profil…</p>
             </div>
         </section>
+        <div class="reservations-modal" id="reservations-modal">
+            <div class="reservations-modal__overlay"></div>
+            <div class="reservations-modal__dialog">
+                <button type="button" class="reservations-modal__close" aria-label="Fermer">&times;</button>
+                <h3 class="reservations-modal__title">Réservations</h3>
+                <p class="reservations-modal__sub"></p>
+                <div class="reservations-modal__list"></div>
+            </div>
+        </div>
 
         <footer class="footer">
             &copy; 2026 Africa Fintech Inside • Tableau de Bord Client
@@ -193,5 +229,6 @@
     <div id="toast" role="status" aria-live="polite"></div>
 
     <script src="../js/dashboardApp.js"></script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

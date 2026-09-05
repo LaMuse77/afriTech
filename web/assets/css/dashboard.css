@@ -25,7 +25,7 @@ body {
 
 .sidebar {
   width: 280px;
-  background: #E4EBE7;
+  background: #173c27;
   border-right: 1px solid rgba(0, 56, 28, 0.1);
   padding: 2rem 1.5rem;
   height: 100vh;
@@ -47,11 +47,10 @@ body {
 .logo-dashboard img {
   height: 40px;
   border-radius: 8px;
-  box-shadow: 0 0 0 1px rgba(0, 56, 28, 0.3), 0 4px 16px rgba(0, 56, 28, 0.15);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .logo-dashboard:hover img {
-  transform: rotate(-6deg) scale(1.05);
+  transform: scale(1.03);
 }
 
 .nav-menu {
@@ -66,29 +65,28 @@ body {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: #a5b4fc;
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
-  border-radius: 12px;
-  transition: color 0.3s, background 0.3s, transform 0.2s;
+  border-radius: 10px;
+  transition: color 0.25s, background 0.25s;
   cursor: pointer;
 }
 .nav-menu a i {
   width: 20px;
   text-align: center;
   font-size: 1rem;
-  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.nav-menu a > span:not(.nav-badge) {
+  flex: 1;
 }
 .nav-menu a:hover {
-  background: rgba(0, 56, 28, 0.08);
-  color: white;
-  transform: translateX(4px);
-}
-.nav-menu a:hover i {
-  transform: scale(1.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 .nav-menu a.active {
-  background: rgba(0, 56, 28, 0.15);
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 .nav-menu a.active::before {
   content: "";
@@ -99,7 +97,95 @@ body {
   width: 3px;
   border-radius: 0 3px 3px 0;
   background: var(--primary);
-  box-shadow: 0 0 12px var(--primary);
+}
+
+.nav-badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-dev {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.reservations-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.reservations-modal.is-open {
+  display: flex;
+}
+.reservations-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+.reservations-modal__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid rgba(0, 56, 28, 0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+.reservations-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.reservations-modal__close:hover {
+  color: var(--primary);
+}
+.reservations-modal__title {
+  margin: 0 0 0.35rem;
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+.reservations-modal__sub {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.reservation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 1rem;
+}
+.reservation-item:last-child {
+  border-bottom: none;
+}
+.reservation-item small {
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
 }
 
 .sidebar-footer {
@@ -162,30 +248,29 @@ body {
 .icon-bell {
   font-size: 1.4rem;
   cursor: pointer;
-  color: #a5b4fc;
-  transition: color 0.3s, transform 0.3s;
+  color: var(--muted);
+  transition: color 0.25s;
 }
 .icon-bell:hover {
   color: var(--primary);
-  transform: rotate(12deg);
 }
 
 .avatar {
   width: 42px;
   height: 42px;
-  color: #fff;
+  background: rgba(0, 56, 28, 0.15);
+  color: var(--primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 4px 14px rgba(0, 56, 28, 0.3);
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.2s;
 }
 .avatar:hover {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .dashboard-section {
@@ -243,7 +328,7 @@ body {
   padding: 1.75rem;
   border: 1px solid rgba(0, 56, 28, 0.2);
   overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s, box-shadow 0.35s;
+  transition: transform 0.25s ease, border-color 0.25s;
 }
 .stat-card::before {
   content: "";
@@ -255,28 +340,13 @@ body {
   background: var(--accent, var(--primary));
   opacity: 0.9;
 }
-.stat-card::after {
-  content: "";
-  position: absolute;
-  top: -40%;
-  right: -20%;
-  width: 160px;
-  height: 160px;
-  opacity: 0.08;
-  transition: opacity 0.35s;
-  pointer-events: none;
-}
 .stat-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-3px);
   border-color: var(--accent, var(--primary));
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-.stat-card:hover::after {
-  opacity: 0.18;
 }
 .stat-card > p:first-child {
   margin-bottom: 0.5rem;
-  font-size: 0 0.95rem;
+  font-size: 0.95rem;
 }
 .stat-card--success {
   --accent: #22c55e;
@@ -288,7 +358,7 @@ body {
   --accent: #00381C;
 }
 .stat-card--purple {
-  --accent: #a855f7;
+  --accent: #00381C;
 }
 
 .stat-value {
@@ -327,21 +397,20 @@ body {
 
 .content-card {
   background: white;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
   overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
+  transition: transform 0.25s ease, border-color 0.25s;
 }
 .content-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   border-color: rgba(0, 56, 28, 0.35);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
 }
 .content-card:hover .thumbnail {
-  transform: scale(1.06);
+  transform: scale(1.03);
 }
 .content-card:hover .thumbnail::after {
-  opacity: 0.85;
+  opacity: 0.6;
 }
 .content-card:hover .play-overlay {
   opacity: 1;
@@ -378,12 +447,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0a0f1c;
+  color: #fff;
   font-size: 1.3rem;
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.35s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 0 8px rgba(0, 56, 28, 0.18);
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .content-info {
@@ -426,7 +494,7 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   gap: 1rem;
-  transition: background 0.3s;
+  transition: background 0.25s;
 }
 .event-item:hover {
   background: rgba(0, 56, 28, 0.05);
@@ -466,7 +534,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s;
+  transition: all 0.25s;
   border: none;
   cursor: pointer;
   font-family: inherit;
@@ -474,13 +542,12 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #00d4ff 0%, #0091ff 100%);
-  color: #0a0f1c;
-  box-shadow: 0 4px 16px rgba(0, 56, 28, 0.25);
+  background: var(--primary);
+  color: #fff;
 }
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 56, 28, 0.4);
+  transform: translateY(-1px);
+  background: rgb(0, 25.4, 12.7);
 }
 .btn-primary:active {
   transform: translateY(0);
@@ -517,7 +584,7 @@ body {
 }
 .btn-danger:hover {
   background: rgba(248, 113, 113, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .btn-logout {
@@ -592,7 +659,7 @@ body {
   border-left: 4px solid var(--primary);
   padding: 14px 20px;
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   max-width: 360px;
   transform: translateY(150%);
   opacity: 0;
@@ -733,7 +800,7 @@ body {
   opacity: 0.85;
 }
 .form-switch a {
-  color: #00E63C;
+  color: var(--primary);
   font-weight: 600;
   text-decoration: none;
 }

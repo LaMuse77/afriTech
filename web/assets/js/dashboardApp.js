@@ -151,6 +151,9 @@ function renderAdminEvent(ev) {
         <small>${formatEventDate(ev.starts_at)}${ev.location ? ' • ' + escapeHtml(ev.location) : ''}</small>
       </div>
       <div class="event-actions">
+        <button type="button" class="btn btn-sm btn-ghost" data-action="reservations">
+          <i class="fas fa-users"></i> Réservations
+        </button>
         <button type="button" class="btn btn-sm btn-ghost" data-action="edit">
           <i class="fas fa-pen"></i> Modifier
         </button>
@@ -483,6 +486,7 @@ async function deleteEvent(id) {
   }
 }
 
+
 function initAdminEventList() {
   const list = document.getElementById('events-full');
   if (!list) return;
@@ -496,9 +500,12 @@ function initAdminEventList() {
       startEventEdit(adminEventsById[id]);
     } else if (btn.dataset.action === 'delete') {
       deleteEvent(id);
+    } else if (btn.dataset.action === 'reservations') {
+      openReservationsModal(id);
     }
   });
 }
+
 
 function initEventCreation() {
   const card = document.getElementById('event-create-card');
@@ -633,6 +640,7 @@ function initSidebar() {
   });
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!getToken()) {
     logout();
@@ -641,6 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSidebar();
   initSearch();
+  initReservationsModal(); // ← ajouté
   revealChildren(document.querySelector('.stats-grid'), 0.1);
   loadProfile();
   loadVideos();
@@ -648,8 +657,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) logoutBtn.addEventListener('click', logout);
-
-  setTimeout(() => {
-    showToast('Nouveau contenu : « Régulation des stablecoins en CEMAC »');
-  }, 4500);
 });
+
+// this is add 
+function formatReservationDate(isoDate) {
+  return new Date(isoDate).toLocaleString('fr-FR', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+}
+
+function renderReservationItem(r) {
+  return `
+    <div class="reservation-item">
+      <div>
+        <strong>${escapeHtml(r.full_name || r.name || r.email)}</strong>
+        <small>${escapeHtml(r.email || '')}${r.phone ? ' • ' + escapeHtml(r.phone) : ''}</small>
+      </div>
+      <small>${formatReservationDate(r.created_at)}</small>
+    </div>`;
+}
+
+async function openReservationsModal(eventId) {
+  const modal = document.getElementById('reservations-modal');
+  if (!modal) return;
+  const list = modal.querySelector('.reservations-modal__list');
+  const title = modal.querySelector('.reservations-modal__title');
+  const sub = modal.querySelector('.reservations-modal__sub');
+
+  const ev = adminEventsById[eventId];
+  title.textContent = ev ? ev.title : 'Réservations';
+  list.innerHTML = '<p class="empty-state">Chargement…</p>';
+  modal.classList.add('is-open');
+
+  try {
+    const data = await apiGet(`/api/admin/reservations/?event=${eventId}`);
+    const reservations = data.results || data || [];
+    sub.textContent = `${reservations.length} réservation${reservations.length > 1 ? 's' : ''}`;
+    list.innerHTML = reservations.length
+      ? reservations.map(renderReservationItem).join('')
+      : '<p class="empty-state">Aucune réservation pour le moment.</p>';
+  } catch (err) {
+    console.error('Réservations:', err);
+    list.innerHTML = '<p class="empty-state">Impossible de charger les réservations.</p>';
+  }
+}
+
+function closeReservationsModal() {
+  document.getElementById('reservations-modal')?.classList.remove('is-open');
+}
+
+function initReservationsModal() {
+  const modal = document.getElementById('reservations-modal');
+  if (!modal) return;
+  modal.querySelector('.reservations-modal__overlay')?.addEventListener('click', closeReservationsModal);
+  modal.querySelector('.reservations-modal__close')?.addEventListener('click', closeReservationsModal);
+}
