@@ -33,7 +33,7 @@ body {
 // ---------- Sidebar ----------
 .sidebar {
   width: $sidebar-w;
-  background: #173c27;
+  background: #f2fcf6;
   border-right: 1px solid rgba($primary, 0.1);
   padding: 2rem 1.5rem;
   height: 100vh;
@@ -41,27 +41,31 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-}
 
-.logo-dashboard {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: white;
-  margin-bottom: 3rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 
-  img {
-    height: 40px;
-    border-radius: 8px;
-    // box-shadow glow retirée
-    transition: transform 0.3s $ease;
+  
+  .logo-dashboard {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      height: 40px;
+      border-radius: 8px;
+      // box-shadow glow retirée
+      transition: transform 0.3s $ease;
+    }
+
+    &:hover img {
+      transform: scale(1.03); // rotation retirée (effet trop "template IA")
+    }
   }
 
-  &:hover img {
-    transform: scale(1.03); // rotation retirée (effet trop "template IA")
-  }
+
 }
 
 // ---------- Liens de navigation (restaurés) ----------
@@ -76,7 +80,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    color: rgba(255, 255, 255, 0.75);
+    color: #002815;
     text-decoration: none;
     border-radius: 10px;
     transition: color 0.25s, background 0.25s;
@@ -93,12 +97,12 @@ body {
 
     &:hover {
       background: rgba(255, 255, 255, 0.06);
-      color: #ffffff;
+      color: #002815;
     }
 
     &.active {
       background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
+      color: #002815;
 
       &::before {
         content: "";
