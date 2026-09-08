@@ -33,13 +33,16 @@ function formatRelativeDate(isoDate) {
 function renderVideoCard(video, featured = false) {
   const badge = CATEGORY_BADGES[video.category] || { label: video.category, class: '' };
   const title = escapeHtml(video.title);
+  const watchUrl = escapeHtml(video.watch_url);
 
   return `
     <article class="video-card ${featured ? 'featured-video' : ''}" data-video-id="${escapeHtml(video.youtube_id)}">
       <div class="thumbnail-wrapper">
         <img src="${escapeHtml(video.thumbnail_url)}" alt="${title}" loading="lazy">
         <div class="thumbnail-overlay">
-          <span class="play-btn-circle"><i class="fas fa-play"></i></span>
+          <a href="${watchUrl}" target="_blank" rel="noopener" class="play-btn-circle" aria-label="Regarder la vidéo">
+            <i class="fas fa-play"></i>
+          </a>
         </div>
         ${video.duration ? `<span class="video-duration">${escapeHtml(video.duration)}</span>` : ''}
       </div>
@@ -49,9 +52,6 @@ function renderVideoCard(video, featured = false) {
           <span class="video-date">${formatRelativeDate(video.published_at)}</span>
         </div>
         <h3>${title}</h3>
-        <a href="${escapeHtml(video.watch_url)}" target="_blank" rel="noopener" class="video-link-action">
-          Regarder ${featured ? "l'épisode" : ''} <i class="fas fa-arrow-right"></i>
-        </a>
       </div>
     </article>
   `;

@@ -710,10 +710,12 @@ section {
 }
 
 /* Mise en avant de la première vidéo (Grand Format horizontal) */
+/* Mise en avant de la première vidéo (Grand Format horizontal) */
 .video-card.featured-video {
     grid-column: span 2;
     display: grid;
     grid-template-columns: 1.2fr 1fr;
+    align-items: start;
     gap: 25px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
 }
@@ -737,16 +739,18 @@ section {
 .thumbnail-wrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 16 / 9;   // force la boîte en paysage, quelle que soit l'image
     overflow: hidden;
     background: #000;
-}
 
-.thumbnail-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
+    img {
+        display: block;      // évite le petit espace fantôme sous l'image (inline par défaut)
+        width: 100%;
+        height: 100%;
+        object-fit: cover;   // recadre l'image pour remplir la boîte, sans la déformer
+        object-position: center; // tu peux mettre "center top" si les visages sont coupés
+        transition: transform 0.6s ease;
+    }
 }
 
 .video-card:hover .thumbnail-wrapper img {
@@ -776,8 +780,8 @@ section {
 .play-btn-circle {
     width: 60px;
     height: 60px;
-    background: #ffffff;
-    color: #0b0f19;
+    background: $primary;
+    color: #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -785,14 +789,18 @@ section {
     font-size: 1.2rem;
     padding-left: 4px; /* Centrage optique de l'icône Play */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    &:hover {
+        background: $gray-green; // vert -> gris au survol direct de l'icône
+    }
 }
 
+
 .video-card:hover .play-btn-circle {
-    //background: #00e5ff; /* Couleur Accent / Cyan High-tech */
-    color: #0b0f19;
-    transform: scale(0.01);
-    //box-shadow: 0 0 25px rgba(0, 229, 255, 0.6);
+    transform: scale(1.08);
 }
 
 .video-duration {
@@ -860,32 +868,6 @@ section {
     margin-bottom: 20px;
 }
 
-.video-link-action {
-    margin-top: auto;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #ffffff;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: gap 0.3s, color 0.3s;
-}
-
-.video-link-action i {
-    font-size: 0.75rem;
-}
-
-.video-card:hover .video-link-action {
-    width: 22%;
-    height: auto;
-    border-radius: 50px;
-    background-color: #D2DDD7;
-    color: $secondary;
-    gap: 12px;
-
-    
-}
 
 
 /* Bouton CTA d'abonnement style YouTube Premium */
