@@ -89,7 +89,7 @@ body {
     i {
       width: 20px;
       text-align: center;
-      font-size: 1rem;
+      font-size: 1.25rem;
       flex-shrink: 0;
     }
 
@@ -228,13 +228,16 @@ body {
 .welcome {
   font-size: 1.8rem;
   font-weight: 700;
+  color: #002815;
 
-  span { color: var(--primary); }
+  span { color: var(--primary);
+      text-transform: capitalize;
+     }
 }
 
 .top-bar-actions {
   display: flex;
-  align-items: center;
+  align-items: center ;
   gap: 1rem;
 }
 
@@ -344,6 +347,7 @@ body {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
+    //color: red;
     background: var(--accent, var(--primary));
     opacity: 0.9;
   }
@@ -357,7 +361,8 @@ body {
 
   > p:first-child {
     margin-bottom: 0.5rem;
-    font-size: 0.95rem;
+    font-size: 1.25rem;
+    color: black;
   }
 
   &--success { --accent: #{$success}; }
@@ -369,7 +374,7 @@ body {
 .stat-value {
   font-size: 2.4rem;
   font-weight: 800;
-  color: var(--accent, var(--primary));
+  //color: var(--accent, var(--primary));
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -387,6 +392,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #002815;
 }
 
 .two-col {
@@ -403,17 +409,15 @@ body {
 
 .content-card {
   background: $BgForBox;
-  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: $radius;
   overflow: hidden;
   transition: transform 0.25s ease, border-color 0.25s;
 
   &:hover {
-    transform: translateY(-4px); // était -8px
+    transform: translateY(-4px);
     border-color: rgba($primary, 0.35);
-    // box-shadow glow retirée
 
-    .thumbnail { transform: scale(1.03); } // était 1.06
+    .thumbnail { transform: scale(1.03); }
     .thumbnail::after { opacity: 0.6; }
     .play-overlay {
       opacity: 1;
@@ -457,28 +461,158 @@ body {
   font-size: 1.3rem;
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.3s, transform 0.3s $ease;
-  // box-shadow halo retirée
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s $ease, background-color 0.3s;
+
+  &:hover {
+    background: var(--muted); // vert -> gris au survol direct de l'icône
+  }
 }
+
+// À ajouter dans dashboard.scss puis recompiler :
+//   sass ../sass/dashboard.scss ../css/dashboard.css
+
+.notification-wrapper {
+  position: relative;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  font: inherit;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 999px;
+  min-width: 16px;
+  text-align: center;
+}
+
+// Caché par défaut : c'est .is-open (ajouté/retiré en JS par
+// initNotificationPanel dans notifications.js) qui déclenche l'affichage.
+.notification-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+
+  &.is-open {
+    display: block;
+  }
+}
+
+.notification-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-subtitle {
+  font-size: 0.75rem;
+  color: #888;
+  flex: 1;
+}
+
+.notification-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+
+  &.unread {
+    background: #f5f8ff;
+  }
+
+  &:hover {
+    background: #f0f0f0;
+  }
+}
+
+.notification-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #999;
+}
+
+// Section Communauté
+.community-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+
+  &--active {
+    background: #ecfdf5;
+    color: #065f46;
+  }
+
+  &--inactive {
+    background: #f3f4f6;
+    color: #4b5563;
+  }
+}
+
+.community-count {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.community-count__value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.community-count__label {
+  color: #888;
+}
+
+// Même reveal que .content-grid > * ailleurs dans le dashboard : réutilise
+// les classes .reveal existantes, rien à ajouter si c'est déjà globalisé.
 
 .content-info {
   padding: 1.25rem;
 
   h3 {
     margin: 12px 0 8px;
+    color: var(--secondary, #002815);
     font-size: 1.1rem;
   }
 
   .meta {
-    color: var(--muted);
+    color: var(--secondary, #002815);
     font-size: 0.9rem;
     line-height: 1.4;
   }
 }
 
 .badge {
-  color: white;
-  font-size: 0.75rem;
+ // color: white;
+  font-size: 0.95rem;
   padding: 2px 8px;
   border-radius: 9999px;
   background: var(--badge-color, #64748b);
@@ -765,15 +899,17 @@ body {
 .event-create-head {
   h3 {
     margin: 0 0 0.35rem;
-    font-size: 1.15rem;
+    color:#002815;
+    font-size: 1.30rem;
   }
 
   p {
     margin: 0 0 1.5rem;
     font-size: 0.9rem;
+    color: #002815;
     opacity: 0.7;
   }
-}
+} 
 
 .form-row {
   display: grid;
@@ -789,6 +925,11 @@ body {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+
+  .btn-ghost {
+    //background: rgba(255, 255, 255, 0.06); 
+    color: red;border: none;
+  }
 }
 
 .form-error {

@@ -7,6 +7,8 @@ from .views import (
     ReservationCreateView,
     AdminEventViewSet,
     AdminReservationViewSet,
+    CommunityMeView,       # à ajouter dans content/views.py (cf. community_views.py donné plus tôt)
+    CommunityStatsView,    # idem
 )
 
 router = DefaultRouter()
@@ -17,4 +19,6 @@ router.register('admin/reservations', AdminReservationViewSet, basename='admin-r
 
 urlpatterns = router.urls + [
     path('reservations/', ReservationCreateView.as_view(), name='reservation-create'),
+    path('community/me/', CommunityMeView.as_view(), name='community-me'),
+    path('community/stats/', CommunityStatsView.as_view(), name='community-stats'),
 ]

@@ -717,22 +717,22 @@ section {
     grid-template-columns: 1.2fr 1fr;
     align-items: start;
     gap: 25px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    //background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
 }
 
 .video-card {
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    //border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    backdrop-filter: blur(10px);
+   // backdrop-filter: blur(10px);
 }
 
 .video-card:hover {
     transform: translateY(-8px);
     border-color: rgba(0, 229, 255, 0.3);
-    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.05);
+   // box-shadow: 0 20px 40px rgba(0, 229, 255, 0.05);
 }
 
 /* Gestion du conteneur de miniature */
@@ -754,7 +754,7 @@ section {
 }
 
 .video-card:hover .thumbnail-wrapper img {
-    transform: scale(2.05);
+    transform: scale(1.35);
 }
 
 /* Overlay & Bouton Play Stylisé */
@@ -840,7 +840,10 @@ section {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-.badge-spotlight { background: rgba(255, 179, 0, 0.15); color: #ffb300; }
+.badge-spotlight { 
+    //background: rgba(255, 179, 0, 0.15); 
+    color: #c3c3b1; 
+}
 .badge-learning { background: rgba(0, 229, 255, 0.15); color: #00e5ff; }
 .badge-decoding { background: rgba(156, 39, 176, 0.15); color: #e040fb; }
 

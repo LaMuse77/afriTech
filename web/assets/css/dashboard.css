@@ -73,7 +73,7 @@ body {
 .nav-menu a i {
   width: 20px;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 .nav-menu a > span:not(.nav-badge) {
@@ -214,9 +214,11 @@ body {
 .welcome {
   font-size: 1.8rem;
   font-weight: 700;
+  color: #002815;
 }
 .welcome span {
   color: var(--primary);
+  text-transform: capitalize;
 }
 
 .top-bar-actions {
@@ -345,7 +347,8 @@ body {
 }
 .stat-card > p:first-child {
   margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 1.25rem;
+  color: black;
 }
 .stat-card--success {
   --accent: #22c55e;
@@ -363,7 +366,6 @@ body {
 .stat-value {
   font-size: 2.4rem;
   font-weight: 800;
-  color: var(--accent, var(--primary));
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -380,6 +382,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #002815;
 }
 
 .two-col {
@@ -396,7 +399,6 @@ body {
 
 .content-card {
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.25s ease, border-color 0.25s;
@@ -450,7 +452,122 @@ body {
   font-size: 1.3rem;
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+}
+.play-overlay:hover {
+  background: var(--muted);
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  font: inherit;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 999px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.notification-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+}
+.notification-panel.is-open {
+  display: block;
+}
+
+.notification-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-subtitle {
+  font-size: 0.75rem;
+  color: #888;
+  flex: 1;
+}
+
+.notification-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.notification-item.unread {
+  background: #f5f8ff;
+}
+.notification-item:hover {
+  background: #f0f0f0;
+}
+
+.notification-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #999;
+}
+
+.community-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.community-status--active {
+  background: #ecfdf5;
+  color: #065f46;
+}
+.community-status--inactive {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.community-count {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.community-count__value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.community-count__label {
+  color: #888;
 }
 
 .content-info {
@@ -458,17 +575,17 @@ body {
 }
 .content-info h3 {
   margin: 12px 0 8px;
+  color: var(--secondary, #002815);
   font-size: 1.1rem;
 }
 .content-info .meta {
-  color: var(--muted);
+  color: var(--secondary, #002815);
   font-size: 0.9rem;
   line-height: 1.4;
 }
 
 .badge {
-  color: white;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   padding: 2px 8px;
   border-radius: 9999px;
   background: var(--badge-color, #64748b);
@@ -757,11 +874,13 @@ body {
 
 .event-create-head h3 {
   margin: 0 0 0.35rem;
-  font-size: 1.15rem;
+  color: #002815;
+  font-size: 1.3rem;
 }
 .event-create-head p {
   margin: 0 0 1.5rem;
   font-size: 0.9rem;
+  color: #002815;
   opacity: 0.7;
 }
 
@@ -780,6 +899,10 @@ body {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+.form-actions .btn-ghost {
+  color: red;
+  border: none;
 }
 
 .form-error {

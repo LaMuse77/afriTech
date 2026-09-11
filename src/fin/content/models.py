@@ -91,3 +91,43 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f'{self.full_name} → {self.event.title}'
+
+
+
+class Communaute(models.Model): # here we think like suscribe 
+
+
+    user_uuid = models.CharField(max_length=255, unique=True)
+    sus_Start_time = models.DateTimeField(auto_now_add=True)
+    sus_End_time = models.DateTimeField(auto_now=True)
+    status = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-sus_Start_time']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user_uuid'],
+                name='unique_user_uuid',
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user_uuid} → {self.status}'
+
+
+class ReservationHistory(models.Model):
+    """Archive les réservations dont l'événement est passé.
+    Ces entrées ne comptent plus dans les stats actives (adhésion
+    communauté, compteurs en cours) — uniquement pour la traçabilité.
+    """
+    reservation = models.OneToOneField(
+        Reservation, on_delete=models.CASCADE, related_name='history_entry'
+    )
+    archived_at = models.DateTimeField(auto_now_add=True)
+    is_counted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-archived_at']
+
+    def __str__(self):
+        return f'{self.reservation} (archivé, non comptabilisé)'

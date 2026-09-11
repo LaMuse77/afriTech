@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'content',
     'accounts',
+    'stats',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +158,8 @@ CACHES = {
 
 
 REST_FRAMEWORK = {
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -166,4 +170,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Mon API',
+    'DESCRIPTION': 'Documentation de mon API',
+    'VERSION': '1.0.0',
 }

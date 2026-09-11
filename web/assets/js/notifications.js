@@ -1,4 +1,77 @@
+// Notifications calculées côté front, sans endpoint dédié :
+// - "Nouveau contenu" pour les vidéos publiées dans la fenêtre récente
+// - "Événement à venir" pour les events proches dans le temps
+// Le statut "lu" est purement local (pas de notion d'utilisateur distant ici).
+
+const NOTIFICATIONS_READ_KEY = 'afi_notifications_read';
+const CONTENT_NOTIF_WINDOW_DAYS = 7;   // contenu publié il y a moins de 7 jours
+const EVENT_NOTIF_WINDOW_DAYS = 3;     // événement dans les 3 prochains jours
+
 let notificationsCache = [];
+
+function getReadIds() {
+    try {
+        return new Set(JSON.parse(localStorage.getItem(NOTIFICATIONS_READ_KEY) || '[]'));
+    } catch {
+        return new Set();
+    }
+}
+
+function saveReadIds(ids) {
+    localStorage.setItem(NOTIFICATIONS_READ_KEY, JSON.stringify([...ids]));
+}
+
+function daysBetween(a, b) {
+    return Math.abs(a - b) / 86400000;
+}
+
+function buildContentNotifications(videos) {
+    const now = Date.now();
+    return videos
+        .filter(v => daysBetween(now, new Date(v.published_at).getTime()) <= CONTENT_NOTIF_WINDOW_DAYS)
+        .map(v => ({
+            id: `content:${v.youtube_id}`,
+            title: 'Nouveau contenu',
+            message: v.title,
+            icon: 'fas fa-play-circle',
+            created_at: v.published_at,
+        }));
+}
+
+function buildEventNotifications(events) {
+    const now = Date.now();
+    return events
+        .filter(ev => {
+            const start = new Date(ev.starts_at).getTime();
+            return start >= now && daysBetween(now, start) <= EVENT_NOTIF_WINDOW_DAYS;
+        })
+        .map(ev => ({
+            id: `event:${ev.id}`,
+            title: 'Événement à venir',
+            message: `${ev.title} — ${formatEventDate(ev.starts_at)}`,
+            icon: 'fas fa-calendar-check',
+            created_at: ev.starts_at,
+        }));
+}
+
+async function buildNotifications() {
+    // On réutilise apiGet, déjà défini dans dashboardApp.js — pas de nouvel
+    // endpoint, juste les deux endpoints publics existants.
+    const [contentData, eventData] = await Promise.all([
+        apiGet('/api/content/?ordering=-published_at'),
+        apiGet('/api/events/'),
+    ]);
+    const videos = contentData.results || [];
+    const events = eventData.results || [];
+
+    const items = [
+        ...buildContentNotifications(videos),
+        ...buildEventNotifications(events),
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const readIds = getReadIds();
+    return items.map(item => ({ ...item, is_read: readIds.has(item.id) }));
+}
 
 function renderNotifications(notifications) {
     const list = document.getElementById('notification-list');
@@ -12,8 +85,6 @@ function renderNotifications(notifications) {
     badge.hidden = unread.length === 0;
     subtitle.textContent = `${unread.length} non lue${unread.length > 1 ? 's' : ''}`;
 
-    // État vide régénéré proprement (avant, le .map sur [] écrasait
-    // le placeholder initial avec une chaîne vide)
     if (notifications.length === 0) {
         list.innerHTML = `
             <div class="notification-empty">
@@ -53,33 +124,26 @@ function attachNotificationHandlers() {
     });
 }
 
-async function markAsRead(id) {
-    try {
-        await apiGet(`/api/notifications/${id}/read/`, { method: 'PATCH' });
-        // mise à jour optimiste locale : pas besoin de refetch tout
-        notificationsCache = notificationsCache.map(n =>
-            n.id == id ? { ...n, is_read: true } : n
-        );
-        renderNotifications(notificationsCache);
-    } catch (err) {
-        console.error('Erreur markAsRead:', err);
-    }
+function markAsRead(id) {
+    const readIds = getReadIds();
+    readIds.add(id);
+    saveReadIds(readIds);
+    notificationsCache = notificationsCache.map(n => n.id === id ? { ...n, is_read: true } : n);
+    renderNotifications(notificationsCache);
 }
 
-async function markAllAsRead() {
-    try {
-        await apiGet('/api/notifications/mark-all-read/', { method: 'POST' });
-        notificationsCache = notificationsCache.map(n => ({ ...n, is_read: true }));
-        renderNotifications(notificationsCache);
-    } catch (err) {
-        console.error('Erreur markAllAsRead:', err);
-    }
+function markAllAsRead() {
+    const readIds = getReadIds();
+    notificationsCache.forEach(n => readIds.add(n.id));
+    saveReadIds(readIds);
+    notificationsCache = notificationsCache.map(n => ({ ...n, is_read: true }));
+    renderNotifications(notificationsCache);
 }
 
 async function loadNotifications() {
     try {
-        const notifications = await apiGet('/api/notifications/');
-        renderNotifications(notifications);
+        notificationsCache = await buildNotifications();
+        renderNotifications(notificationsCache);
     } catch (err) {
         console.error('Erreur lors du chargement des notifications:', err);
     }
@@ -97,7 +161,6 @@ function initNotificationPanel() {
         panel.classList.toggle('is-open');
     });
 
-    // Ferme le panneau au clic en dehors
     document.addEventListener('click', (e) => {
         if (panel.classList.contains('is-open') && !panel.contains(e.target) && e.target !== btn) {
             panel.classList.remove('is-open');

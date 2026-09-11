@@ -1,7 +1,11 @@
 # serializers.py
+import hashlib
+
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Video, Event, Reservation
+
+from .models import Video, Event, Reservation, Communaute
+
 
 class VideoSerializer(serializers.ModelSerializer):
     watch_url = serializers.ReadOnlyField()
@@ -28,7 +32,13 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    """Création d'une réservation depuis la landing (accès public)."""
+    """Création d'une réservation depuis la landing (accès public).
+
+    Fusion de deux versions qui existaient en double dans le fichier
+    d'origine (la seconde écrasait silencieusement la première) :
+    validation (event ouvert, pas déjà passé, pas de doublon email)
+    + activation automatique de l'adhésion Communauté à la création.
+    """
 
     class Meta:
         model = Reservation
@@ -56,6 +66,23 @@ class ReservationSerializer(serializers.ModelSerializer):
                 {'email': 'Vous avez déjà réservé une place pour cet événement.'}
             )
         return attrs
+
+    def create(self, validated_data):
+        reservation = super().create(validated_data)
+        self._activate_communaute_membership(reservation)
+        return reservation
+
+    def _activate_communaute_membership(self, reservation):
+        """Réserver un événement rend automatiquement membre de la communauté."""
+        if reservation.user_id:
+            identifier = f"user:{reservation.user_id}"
+        else:
+            identifier = f"email:{hashlib.sha256(reservation.email.encode()).hexdigest()}"
+
+        Communaute.objects.update_or_create(
+            user_uuid=identifier,
+            defaults={'status': True},
+        )
 
 
 class AdminEventSerializer(serializers.ModelSerializer):
@@ -87,3 +114,12 @@ class AdminReservationSerializer(serializers.ModelSerializer):
             'id', 'event', 'event_title', 'full_name', 'email',
             'username', 'email_sent', 'created_at',
         ]
+
+
+class CommunauteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Communaute
+        # user_uuid n'est jamais exposé : identifiant interne, pas une
+        # donnée à renvoyer au client.
+        fields = ['status', 'sus_Start_time', 'sus_End_time']
+        read_only_fields = fields

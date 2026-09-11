@@ -110,23 +110,27 @@ function renderProfile(profile) {
   animateCount(document.getElementById('stat-points'), profile.community_points);
 }
 
+
 function renderVideoCard(v) {
   const badge = CATEGORY_BADGES[v.category] || { label: v.category, color: '#64748b' };
   const thumb = escapeHtml(v.thumbnail_url);
+  const watchUrl = escapeHtml(v.watch_url);
   return `
     <div class="content-card">
       <div class="thumbnail" style="--thumb: url('${thumb}')">
-        <div class="play-overlay"><i class="fas fa-play"></i></div>
+        <a href="${watchUrl}" target="_blank" rel="noopener" class="play-overlay" aria-label="Regarder la vidéo">
+          <i class="fas fa-play"></i>
+        </a>
       </div>
       <div class="content-info">
         <span class="badge" style="--badge-color: ${badge.color}">${escapeHtml(badge.label)}</span>
         <h3>${escapeHtml(v.title)}</h3>
         <p class="meta">${escapeHtml(v.duration || '')} • ${formatRelativeDate(v.published_at)}</p>
-        <a href="${escapeHtml(v.watch_url)}" target="_blank" rel="noopener"
-           class="btn btn-primary btn-sm btn-watch">Regarder</a>
       </div>
     </div>`;
 }
+
+
 
 function renderEvent(ev) {
   const statusClass = `status-${ev.status}`;

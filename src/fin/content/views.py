@@ -1,19 +1,23 @@
 # views.py
+import hashlib
+
 from django.db.models import F, Count
 from django.utils import timezone
-from rest_framework import viewsets, filters, generics, status
+from rest_framework import viewsets, filters, generics, status, permissions
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from accounts.models import MemberProfile
 from .emails import send_reservation_email
-from .models import Video, Event, Reservation
+from .models import Video, Event, Reservation, Communaute
 from .serializers import (
     VideoSerializer,
     EventSerializer,
     ReservationSerializer,
     AdminEventSerializer,
     AdminReservationSerializer,
+    CommunauteSerializer,
 )
 
 
@@ -112,3 +116,55 @@ class AdminReservationViewSet(viewsets.ReadOnlyModelViewSet):
         if event_id:
             qs = qs.filter(event_id=event_id)
         return qs
+
+
+def _community_identifier_candidates(user):
+    """Identifiants possibles dans Communaute pour cet utilisateur.
+
+    Un membre est rattaché soit par son compte (réservation faite en
+    étant connecté → 'user:<id>'), soit par son email (réservation faite
+    anonymement depuis la landing → 'email:<sha256>').
+    """
+    candidates = [f"user:{user.id}"]
+    if user.email:
+        email_hash = hashlib.sha256(user.email.strip().lower().encode()).hexdigest()
+        candidates.append(f"email:{email_hash}")
+    return candidates
+
+
+class CommunityMeView(APIView):
+    """GET /api/community/me/
+
+    Protection : IsAuthenticated. On ne renvoie que le statut du user
+    courant — jamais user_uuid, jamais les données d'un autre membre.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        identifiers = _community_identifier_candidates(request.user)
+        membership = (
+            Communaute.objects
+            .filter(user_uuid__in=identifiers, status=True)
+            .order_by('-sus_Start_time')
+            .first()
+        )
+
+        if not membership:
+            return Response({'is_member': False})
+
+        data = CommunauteSerializer(membership).data
+        data['is_member'] = True
+        return Response(data)
+
+
+class CommunityStatsView(APIView):
+    """GET /api/community/stats/
+
+    Protection : IsAuthenticated (réservé aux membres connectés du
+    dashboard). Ne renvoie qu'un agrégat, jamais de données individuelles.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        total_members = Communaute.objects.filter(status=True).count()
+        return Response({'total_members': total_members})

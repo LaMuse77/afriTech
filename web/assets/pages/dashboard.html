@@ -40,14 +40,18 @@
                 <a data-section="community">
                     <i class="fas fa-users"></i>
                     <span>Communauté</span>
-                    <span class="nav-badge badge-dev">EN DEV</span>
+                </a>
+            </li>
+            <li>
+                <a data-section="stats">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistiques</span>
                 </a>
             </li>
             <li>
                 <a data-section="profile">
                     <i class="fas fa-user-circle"></i>
                     <span>Profil</span>
-                    <span class="nav-badge badge-dev">EN DEV</span>
                 </a>
             </li>
         </ul>
@@ -70,7 +74,26 @@
                     <input type="text" placeholder="Rechercher un contenu...">
                     <i class="fas fa-search"></i>
                 </div>
-                <i class="fas fa-bell icon-bell"></i>
+
+                <!-- Panneau de notifications : les id ci-dessous sont ceux
+                     attendus par notifications.js -->
+                <div class="notification-wrapper">
+                    <button type="button" id="notification-btn" class="icon-btn" aria-label="Notifications">
+                        <i class="fas fa-bell icon-bell"></i>
+                        <span id="notification-count" class="notification-badge" hidden>0</span>
+                    </button>
+                    <div id="notification-panel" class="notification-panel">
+                        <div class="notification-panel__head">
+                            <strong>Notifications</strong>
+                            <span id="notification-subtitle" class="notification-subtitle"></span>
+                            <button type="button" id="mark-all-read" class="btn btn-ghost btn-sm">Tout marquer lu</button>
+                        </div>
+                        <div id="notification-list" class="notification-list">
+                            <p class="empty-state">Chargement…</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="avatar" id="avatar">A</div>
             </div>
         </div>
@@ -201,7 +224,15 @@
         <!-- ===== Section: Communauté ===== -->
         <section id="section-community" class="dashboard-section">
             <div class="section-title"><i class="fas fa-users"></i> Communauté</div>
-            <p class="empty-state">Espace communautaire à venir.</p>
+            <p class="empty-state">Chargement…</p>
+        </section>
+
+        <!-- ===== Section: Statistiques ===== -->
+        <section id="section-stats" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-chart-line"></i> Statistiques de la plateforme</div>
+            <div class="stats-grid" id="site-stats-grid">
+                <p class="empty-state">Chargement des statistiques…</p>
+            </div>
         </section>
 
         <!-- ===== Section: Profil ===== -->
@@ -228,7 +259,12 @@
 
     <div id="toast" role="status" aria-live="polite"></div>
 
+    <!-- ORDRE IMPORTANT : dashboardApp.js déclare SECTION_LOADERS en const ;
+         community.js et stats.js y ajoutent une entrée (ils doivent donc
+         être chargés APRÈS lui). notifications.js est indépendant. -->
     <script src="../js/dashboardApp.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/community.js"></script>
+    <script src="../js/stats.js"></script>
 </body>
 </html>

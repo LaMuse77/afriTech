@@ -650,27 +650,25 @@ section.dynamic-bg {
 }
 
 /* Mise en avant de la première vidéo (Grand Format horizontal) */
+/* Mise en avant de la première vidéo (Grand Format horizontal) */
 .video-card.featured-video {
   grid-column: span 2;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
+  align-items: start;
   gap: 25px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
 }
 
 .video-card {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(10px);
 }
 
 .video-card:hover {
   transform: translateY(-8px);
   border-color: rgba(0, 229, 255, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 229, 255, 0.05);
 }
 
 /* Gestion du conteneur de miniature */
@@ -681,16 +679,17 @@ section.dynamic-bg {
   overflow: hidden;
   background: #000;
 }
-
 .thumbnail-wrapper img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.6s ease;
 }
 
 .video-card:hover .thumbnail-wrapper img {
-  transform: scale(2.05);
+  transform: scale(1.35);
 }
 
 /* Overlay & Bouton Play Stylisé */
@@ -716,8 +715,8 @@ section.dynamic-bg {
 .play-btn-circle {
   width: 60px;
   height: 60px;
-  background: #ffffff;
-  color: #0b0f19;
+  background: #00381C;
+  color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -725,12 +724,16 @@ section.dynamic-bg {
   font-size: 1.2rem;
   padding-left: 4px; /* Centrage optique de l'icône Play */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.play-btn-circle:hover {
+  background: #4C725F;
 }
 
 .video-card:hover .play-btn-circle {
-  color: #0b0f19;
-  transform: scale(0.01);
+  transform: scale(1.08);
 }
 
 .video-duration {
@@ -772,8 +775,7 @@ section.dynamic-bg {
 }
 
 .badge-spotlight {
-  background: rgba(255, 179, 0, 0.15);
-  color: #ffb300;
+  color: #c3c3b1;
 }
 
 .badge-learning {
@@ -805,31 +807,6 @@ section.dynamic-bg {
   color: #a0aec0;
   line-height: 1.6;
   margin-bottom: 20px;
-}
-
-.video-link-action {
-  margin-top: auto;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ffffff;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: gap 0.3s, color 0.3s;
-}
-
-.video-link-action i {
-  font-size: 0.75rem;
-}
-
-.video-card:hover .video-link-action {
-  width: 22%;
-  height: auto;
-  border-radius: 50px;
-  background-color: #D2DDD7;
-  color: #002815;
-  gap: 12px;
 }
 
 /* Bouton CTA d'abonnement style YouTube Premium */
