@@ -1,5 +1,7 @@
-// Section "Statistiques" : cache Mixpanel exposé par GET /api/stats/
-// (IsAdminUser côté serveur — un membre non-staff verra un 403).
+// Section "Statistiques" : expose le endpoint réel /api/site-stats/.
+// Gère deux formes de réponse possibles tant qu'on n'a pas vu stats/views.py :
+// - une liste de snapshots : [{metric_key, value, fetched_at}, ...]
+// - un objet unique : {metric_key, value, fetched_at}
 // Dépend de fonctions déjà définies dans dashboardApp.js : apiGet,
 // escapeHtml, formatRelativeDate, revealChildren.
 // Ce fichier doit être chargé APRÈS dashboardApp.js.
@@ -10,7 +12,7 @@ const METRIC_LABELS = {
 };
 
 function renderSiteStatCard(snapshot) {
-  const meta = METRIC_LABELS[snapshot.metric_key] || { label: snapshot.metric_key, icon: 'fas fa-chart-bar' };
+  const meta = METRIC_LABELS[snapshot.metric_key] || { label: snapshot.metric_key || 'Statistique', icon: 'fas fa-chart-bar' };
   const value = typeof snapshot.value === 'number'
     ? snapshot.value.toLocaleString('fr-FR')
     : JSON.stringify(snapshot.value);
@@ -26,8 +28,13 @@ async function loadStatsSection() {
   const grid = document.getElementById('site-stats-grid');
   if (!grid) return;
   try {
-    const data = await apiGet('/api/stats/');
-    const snapshots = data.results || data;
+    const data = await apiGet('/api/site-stats/');
+    // Normalise en tableau, quelle que soit la forme renvoyée par le backend :
+    // liste directe, pagination DRF ({results: [...]}), ou objet unique.
+    const snapshots = Array.isArray(data)
+      ? data
+      : (data.results || [data]);
+
     grid.innerHTML = snapshots.length
       ? snapshots.map(renderSiteStatCard).join('')
       : '<p class="empty-state">Aucune statistique disponible pour le moment.</p>';
@@ -40,6 +47,4 @@ async function loadStatsSection() {
   }
 }
 
-// Même remarque que dans community.js : on AJOUTE une propriété à
-// SECTION_LOADERS, déjà déclaré dans dashboardApp.js — pas de redéclaration.
 SECTION_LOADERS.stats = loadStatsSection;

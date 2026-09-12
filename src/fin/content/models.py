@@ -131,3 +131,36 @@ class ReservationHistory(models.Model):
 
     def __str__(self):
         return f'{self.reservation} (archivé, non comptabilisé)'
+
+
+
+# (settings et models sont déjà importés en haut du fichier)
+
+class ContentCompletion(models.Model):
+    """Marque qu'un membre a 'terminé' (cliqué Regarder) un contenu.
+
+    Une seule ligne par (user, video) grâce à la contrainte d'unicité :
+    reregarder la même vidéo ne fait pas repartir le compteur.
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='content_completions',
+    )
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name='completions',
+    )
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'video'],
+                name='unique_completion_per_user_video',
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} → {self.video}'

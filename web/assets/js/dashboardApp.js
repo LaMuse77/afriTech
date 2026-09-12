@@ -111,6 +111,10 @@ function renderProfile(profile) {
 }
 
 
+
+// 1) Remplacer renderVideoCard par cette version (ajout de data-youtube-id
+//    sur le lien "play-overlay", rien d'autre ne change) :
+
 function renderVideoCard(v) {
   const badge = CATEGORY_BADGES[v.category] || { label: v.category, color: '#64748b' };
   const thumb = escapeHtml(v.thumbnail_url);
@@ -118,7 +122,8 @@ function renderVideoCard(v) {
   return `
     <div class="content-card">
       <div class="thumbnail" style="--thumb: url('${thumb}')">
-        <a href="${watchUrl}" target="_blank" rel="noopener" class="play-overlay" aria-label="Regarder la vidéo">
+        <a href="${watchUrl}" target="_blank" rel="noopener" class="play-overlay"
+           aria-label="Regarder la vidéo" data-youtube-id="${escapeHtml(v.youtube_id)}">
           <i class="fas fa-play"></i>
         </a>
       </div>
@@ -129,6 +134,22 @@ function renderVideoCard(v) {
       </div>
     </div>`;
 }
+
+//    d'attendre DOMContentLoaded, la délégation d'événements marche dès
+//    que le script est chargé) :
+
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('.play-overlay');
+  if (!link) return;
+
+  const youtubeId = link.dataset.youtubeId;
+  if (!youtubeId) return;
+
+  // Fire-and-forget : on ne bloque jamais l'ouverture de YouTube (target="_blank")
+  // en attendant la réponse. Si le membre n'est pas connecté ou que ça échoue,
+  // on ignore silencieusement — ce n'est pas critique.
+  postJson(`/api/content/${encodeURIComponent(youtubeId)}/watch/`, {}).catch(() => {});
+});
 
 
 

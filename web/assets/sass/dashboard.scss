@@ -382,7 +382,7 @@ body {
 .stat-hint {
   font-size: 0.9rem;
   margin-top: 0.35rem;
-  color: var(--accent, var(--primary));
+  color: #040404;
 }
 
 // ---------- Sections & grids ----------
@@ -615,12 +615,12 @@ body {
   font-size: 0.95rem;
   padding: 2px 8px;
   border-radius: 9999px;
-  background: var(--badge-color, #64748b);
+  background: #002815;
 }
 
 // ---------- Events ----------
 .events-list {
-  background: var(--card);
+  background: var(--dark);
   border-radius: $radius;
   padding: 1.5rem;
 }

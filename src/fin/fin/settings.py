@@ -157,6 +157,29 @@ CACHES = {
 }
 
 
+# À ajouter dans fin/settings.py :
+
+# 1) Ajouter 'django_crontab' à INSTALLED_APPS (nécessite : pip install django-crontab)
+#    INSTALLED_APPS = [
+#        ...
+#        'django_crontab',
+#    ]
+
+# 2) Ajouter ce bloc, par exemple juste après le bloc YouTube existant :
+
+from .cron_utils import minutes_to_cron  # noqa: E402
+
+# Une seule variable pilote l'intervalle, en dev (Windows) comme en prod (Linux).
+SYNC_INTERVAL_MINUTES = config('SYNC_INTERVAL_MINUTES', default=60, cast=int)
+_SYNC_SCHEDULE = minutes_to_cron(SYNC_INTERVAL_MINUTES)
+
+# django-crontab (actif uniquement en prod / Linux — voir plus bas pourquoi).
+CRONJOBS = [
+    (_SYNC_SCHEDULE, 'django.core.management.call_command', ['sync_youtube']),
+    (_SYNC_SCHEDULE, 'django.core.management.call_command', ['sync_stats']),
+]
+
+
 REST_FRAMEWORK = {
     
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -177,3 +200,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Documentation de mon API',
     'VERSION': '1.0.0',
 }
+
+MIXPANEL_PROJECT_ID = config('MIXPANEL_PROJECT_ID')
+MIXPANEL_SERVICE_ACCOUNT_USERNAME = config('MIXPANEL_SERVICE_ACCOUNT_USERNAME')
+MIXPANEL_SERVICE_ACCOUNT_SECRET = config('MIXPANEL_SERVICE_ACCOUNT_SECRET')

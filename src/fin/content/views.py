@@ -4,13 +4,14 @@ import hashlib
 from django.db.models import F, Count
 from django.utils import timezone
 from rest_framework import viewsets, filters, generics, status, permissions
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import MemberProfile
 from .emails import send_reservation_email
-from .models import Video, Event, Reservation, Communaute
+from .models import Video, Event, Reservation, Communaute, ContentCompletion
 from .serializers import (
     VideoSerializer,
     EventSerializer,
@@ -20,10 +21,17 @@ from .serializers import (
     CommunauteSerializer,
 )
 
+# Combien de points communauté un contenu terminé rapporte. Un seul endroit
+# à changer si tu veux ajuster le barème.
+POINTS_PER_COMPLETED_CONTENT = 10
+
 
 class VideoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    # youtube_id plutôt que l'id interne : c'est ce que le front a déjà
+    # dans chaque objet vidéo (VideoSerializer n'expose pas l'id numérique).
+    lookup_field = 'youtube_id'
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description']
     ordering_fields = ['published_at', 'order']
@@ -37,6 +45,25 @@ class VideoViewSet(viewsets.ReadOnlyModelViewSet):
         if featured == 'true':
             qs = qs.filter(is_featured=True)
         return qs
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def watch(self, request, *args, **kwargs):
+        """POST /api/content/<youtube_id>/watch/
+
+        Marque le contenu comme terminé pour le membre connecté. Ne compte
+        qu'une fois par (membre, vidéo) — les clics suivants sur la même
+        vidéo ne réincrémentent rien (get_or_create + created).
+        """
+        video = self.get_object()
+        _, created = ContentCompletion.objects.get_or_create(
+            user=request.user, video=video
+        )
+        if created:
+            MemberProfile.objects.filter(user=request.user).update(
+                completed_contents=F('completed_contents') + 1,
+                community_points=F('community_points') + POINTS_PER_COMPLETED_CONTENT,
+            )
+        return Response({'completed': True, 'first_time': created})
 
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
