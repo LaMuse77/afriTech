@@ -1,11 +1,5 @@
 
-const API_BASE =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:8000'
-        : window.location.origin;
-
-
+const API_BASE = 'http://localhost:8000'; // à changer en prod
 const TOKEN_KEY = 'afi_token';
 
 function escapeHtml(value) {
@@ -106,21 +100,38 @@ const CATEGORY_BADGES = {
   learning:  { label: 'AFI Learning', color: '#22c55e' },
 };
 
-function renderProfile(profile) {
+// ----- Stat-grid Accueil -----
+// stat-contents : depuis /api/me/ (profile.completed_contents)
+// stat-events   : total d'événements sur la plateforme (pas juste ceux du membre)
+// stat-points   : total de membres actifs de la Communauté
+
+function renderProfileIdentity(profile) {
   const firstName = profile.first_name || profile.username || 'membre';
   document.getElementById('welcome-name').textContent = firstName;
   document.getElementById('avatar').textContent = firstName.charAt(0);
-
   animateCount(document.getElementById('stat-contents'), profile.completed_contents);
-  animateCount(document.getElementById('stat-hours'), profile.training_hours, { suffix: 'h' });
-  animateCount(document.getElementById('stat-events'), profile.events_attended);
-  animateCount(document.getElementById('stat-points'), profile.community_points);
 }
 
+async function loadTotalEventsStat() {
+  try {
+    // ?all=true : on veut le total de tous les événements, pas seulement
+    // les événements à venir (EventViewSet filtre par défaut sur starts_at
+    // >= maintenant). `count` vient de la pagination DRF.
+    const data = await apiGet('/api/events/?all=true');
+    animateCount(document.getElementById('stat-events'), data.count ?? 0);
+  } catch (err) {
+    console.error('Total événements:', err);
+  }
+}
 
-
-// 1) Remplacer renderVideoCard par cette version (ajout de data-youtube-id
-//    sur le lien "play-overlay", rien d'autre ne change) :
+async function loadTotalMembersStat() {
+  try {
+    const data = await apiGet('/api/community/stats/');
+    animateCount(document.getElementById('stat-points'), data.total_members ?? 0);
+  } catch (err) {
+    console.error('Total membres communauté:', err);
+  }
+}
 
 function renderVideoCard(v) {
   const badge = CATEGORY_BADGES[v.category] || { label: v.category, color: '#64748b' };
@@ -142,9 +153,10 @@ function renderVideoCard(v) {
     </div>`;
 }
 
-//    d'attendre DOMContentLoaded, la délégation d'événements marche dès
-//    que le script est chargé) :
-
+// Envoie le clic sur "Regarder" vers /api/content/<youtube_id>/watch/ pour
+// incrémenter completed_contents + community_points côté serveur. Ne bloque
+// jamais l'ouverture de la vidéo (lien target="_blank") en attendant la
+// réponse, et échoue silencieusement si ça rate (pas critique).
 document.addEventListener('click', (e) => {
   const link = e.target.closest('.play-overlay');
   if (!link) return;
@@ -152,13 +164,8 @@ document.addEventListener('click', (e) => {
   const youtubeId = link.dataset.youtubeId;
   if (!youtubeId) return;
 
-  // Fire-and-forget : on ne bloque jamais l'ouverture de YouTube (target="_blank")
-  // en attendant la réponse. Si le membre n'est pas connecté ou que ça échoue,
-  // on ignore silencieusement — ce n'est pas critique.
   postJson(`/api/content/${encodeURIComponent(youtubeId)}/watch/`, {}).catch(() => {});
 });
-
-
 
 function renderEvent(ev) {
   const statusClass = `status-${ev.status}`;
@@ -201,11 +208,17 @@ let cachedProfile = null;
 async function loadProfile() {
   try {
     cachedProfile = await apiGet('/api/me/');
-    renderProfile(cachedProfile);
-    initEventCreation();
   } catch (err) {
     console.error('Profil:', err);
+    return;
   }
+  renderProfileIdentity(cachedProfile);
+  initEventCreation();
+
+  // Indépendants du profil : si l'un échoue, l'autre carte continue de
+  // s'afficher normalement (pas de Promise.all qui ferait tout échouer).
+  loadTotalEventsStat();
+  loadTotalMembersStat();
 }
 
 function renderProfileCard(profile) {

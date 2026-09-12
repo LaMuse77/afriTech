@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <!-- Styles compilés depuis ../sass/dashboard.scss (sass ../sass/dashboard.scss ../css/dashboard.css) -->
+
+    <!-- Mixpanel : envoie les événements pour que /api/site-stats/ ait
+         quelque chose à afficher. Token = Project Token (Settings > SellMuse),
+         PAS le Project ID ni le Service Account. -->
+    <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+    <script>
+        mixpanel.init("c207f032a0e8c4c07da6d487538b53c3", { persistence: "localStorage" });
+        // Événement explicite plutôt que l'autocapture : le nom est garanti
+        // identique à celui utilisé dans TRACKED_METRICS (sync_stats.py).
+        mixpanel.track("Page View", { page: "dashboard" });
+    </script>
 </head>
 <body>
     <!-- Sidebar -->
@@ -52,8 +63,11 @@
                 <a data-section="profile">
                     <i class="fas fa-user-circle"></i>
                     <span>Profil</span>
+                    <span class="nav-badge badge-dev">EN DEV</span>
+                
                 </a>
             </li>
+
         </ul>
 
         <div class="sidebar-footer">
@@ -106,20 +120,15 @@
                     <div class="stat-value" id="stat-contents" data-count="0">0</div>
                     <p class="stat-hint">Progression</p>
                 </div>
-                <div class="stat-card stat-card--warning">
-                    <p><i class="fas fa-clock"></i> Heures de formation</p>
-                    <div class="stat-value" id="stat-hours" data-count="0" data-suffix="h">0h</div>
-                    <p class="stat-hint">Objectif : 60h/an</p>
-                </div>
                 <div class="stat-card stat-card--info">
                     <p><i class="fas fa-calendar-check"></i> Événements</p>
                     <div class="stat-value" id="stat-events" data-count="0">0</div>
-                    <p class="stat-hint">Participations</p>
+                    <p class="stat-hint">Au total</p>
                 </div>
                 <div class="stat-card stat-card--purple">
-                    <p><i class="fas fa-star"></i> Points Communauté</p>
+                    <p><i class="fas fa-users"></i> Communauté</p>
                     <div class="stat-value" id="stat-points" data-count="0">0</div>
-                    <p class="stat-hint">Classement membres</p>
+                    <p class="stat-hint">Membres actifs</p>
                 </div>
             </div>
 
