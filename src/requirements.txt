@@ -3,4 +3,8 @@ django-cors-headers==4.9.0
 djangorestframework==3.17.1
 google-api-python-client==2.198.0
 isodate==0.7.2
-python-decouple==3.8
+python-decouple
+drf-spectacular
+gunicorn
+whitenoise
+dj-database--url

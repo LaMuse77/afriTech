@@ -1,4 +1,10 @@
-const API_BASE = 'http://localhost:8000'; // à remplacer par ton domaine en prod
+
+const API_BASE =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000'
+        : window.location.origin;
+// à remplacer par ton domaine en prod
 
 const CATEGORY_BADGES = {
   spotlight: { label: 'CEO & Leaders Spotlight', class: 'badge-spotlight' },

@@ -4,7 +4,11 @@
 (function () {
   'use strict';
 
-  const API_BASE = 'http://localhost:8000'; // à remplacer par ton domaine en prod
+  const API_BASE =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000'
+        : window.location.origin;
 
   const modal = document.getElementById('reserve-modal');
   const form = document.getElementById('reserve-form');
