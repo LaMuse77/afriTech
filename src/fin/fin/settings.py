@@ -146,8 +146,16 @@ STATICFILES_DIRS = [
 
 
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'http://localhost:8000',
+    'https://afritech-front.onrender.com',
+]
 
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5500,http://127.0.0.1:5500').split(',')
+CRSF_TRUSTED_ORIGINS = [
+    'https://afritech-front.onrender.com',
+]
 
 # YouTube
 YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')
