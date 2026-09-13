@@ -4,11 +4,12 @@
 (function () {
   'use strict';
 
-  const API_BASE =
+
+const API_BASE =
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1'
         ? 'http://localhost:8000'
-        : window.location.origin;
+        : 'https://afritech-bsa6.onrender.com';
 
   const modal = document.getElementById('reserve-modal');
   const form = document.getElementById('reserve-form');

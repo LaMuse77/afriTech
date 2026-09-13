@@ -1,5 +1,11 @@
 
-const API_BASE = 'http://localhost:8000'; // à changer en prod
+
+
+const API_BASE =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000'
+        : 'https://afritech-bsa6.onrender.com';
 const TOKEN_KEY = 'afi_token';
 
 function escapeHtml(value) {
