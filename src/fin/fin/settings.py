@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'content',
     'accounts',
     'stats',
+    'newsletter',
     'drf_spectacular',
 ]
 

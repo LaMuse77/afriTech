@@ -264,10 +264,11 @@
                 <h2>AFI Weekly</h2>
                 <p>Restez à l'avant-garde. Recevez chaque semaine nos analyses confidentielles, les actualités clés et opportunités exclusives de l'écosystème.</p>
                 
-                <form>
-                    <input type="email" placeholder="Votre adresse email professionnelle" required>
+                <form id="newsletter-form">
+                    <input type="email" name="email" placeholder="Votre adresse email professionnelle" required>
                     <button type="submit" class="btn btn-fluor">S'abonner</button>
                 </form>
+                <p id="newsletter-feedback" class="newsletter-feedback" role="status" aria-live="polite"></p>
             </div>
         </section>
 
@@ -328,5 +329,6 @@
     <script src="assets/js/carouselApp.js"></script>
     <script src="assets/js/fecthApp.js"></script>
     <script src="assets/js/reserveApp.js"></script>
+    <script src="assets/js/newsletterApp.js"></script>
 </body> 
 </html>

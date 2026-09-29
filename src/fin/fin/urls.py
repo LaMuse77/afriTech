@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/', include('content.urls')),
     path('api/', include('accounts.urls')),
     path('api/', include('stats.urls')),
+    path('api/', include('newsletter.urls')),
 
     path(
         'api/schema/',
