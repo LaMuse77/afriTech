@@ -591,12 +591,6 @@ body {
   background: #002815;
 }
 
-.events-list {
-  background: var(--dark);
-  border-radius: 16px;
-  padding: 1.5rem;
-}
-
 .events-list-footer {
   margin-top: 2rem;
 }

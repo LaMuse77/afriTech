@@ -32,19 +32,19 @@ urlpatterns = [
 
     path(
         'login/',
-        TemplateView.as_view(template_name='pages/login.html'),
+        TemplateView.as_view(template_name='assets/pages/login.html'),
         name='login'
     ),
 
     path(
         'register/',
-        TemplateView.as_view(template_name='pages/register.html'),
+        TemplateView.as_view(template_name='assets/pages/register.html'),
         name='register'
     ),
 
     path(
         'dashboard/',
-        TemplateView.as_view(template_name='pages/dashboard.html'),
+        TemplateView.as_view(template_name='assets/pages/dashboard.html'),
         name='dashboard'
     ),
 

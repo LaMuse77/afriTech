@@ -24,9 +24,9 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
     'afritech-bsa6.onrender.com',
-] 
+]
 
 
 # Application definition
@@ -65,7 +65,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'web',
+            BASE_DIR.parent.parent / 'web',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -141,7 +141,7 @@ STATIC_URL = '/assets/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'web' / 'assets',
+    BASE_DIR.parent.parent / 'web' / 'assets',
 ]
 
 

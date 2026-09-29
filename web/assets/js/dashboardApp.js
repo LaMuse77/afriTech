@@ -634,21 +634,6 @@ async function loadVideos() {
   }
 }
 
-async function loadEvents() {
-  const list = document.getElementById('events-list');
-  if (!list) return;
-  try {
-    const data = await apiGet('/api/events/');
-    const events = data.results || [];
-    list.innerHTML = events.length
-      ? events.map(renderEvent).join('')
-      : '<p class="empty-state">Aucun événement à venir.</p>';
-    if (events.length) revealChildren(list, 0.1);
-  } catch (err) {
-    console.error('Événements:', err);
-    list.innerHTML = '<p class="empty-state">Impossible de charger les événements.</p>';
-  }
-}
 
 const SECTION_LOADERS = {
   contents: loadAllContents,
