@@ -67,10 +67,15 @@ const API_BASE =
       <article class="card-item">
         ${ev.badge ? `<div class="card-badge">${esc(ev.badge)}</div>` : ''}
         <h3>${esc(ev.title)}</h3>
-        <p>${esc(ev.description || '')}</p>
+        <p class="card-desc" data-clamp>${esc(ev.description || '')}</p>
         <p class="card-meta"><i class="fas fa-calendar"></i> ${formatEventDate(ev.starts_at)}${ev.location ? ' • ' + esc(ev.location) : ''}</p>
         <button type="button" class="btn btn-primary btn-sm" data-reserve data-event="${ev.id}">Réserver</button>
       </article>`).join('');
+
+    // Active le "Voir plus" sur les nouvelles descriptions.
+    if (typeof window.initReadMore === 'function') {
+      window.initReadMore(grid);
+    }
 
     // Le carrousel doit recalculer ses slides/points après l'injection.
     if (typeof window.refreshCarousel === 'function') {

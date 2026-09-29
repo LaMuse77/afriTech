@@ -219,6 +219,14 @@ async function loadProfile() {
     return;
   }
   renderProfileIdentity(cachedProfile);
+
+  // La section Newsletter est réservée aux admins : on masque son entrée de
+  // menu pour les membres normaux (l'API reste protégée côté serveur).
+  const newsletterLink = document.querySelector('.nav-menu a[data-section="newsletter"]');
+  if (newsletterLink && !cachedProfile.is_staff) {
+    newsletterLink.closest('li').hidden = true;
+  }
+
   initEventCreation();
 
   // Indépendants du profil : si l'un échoue, l'autre carte continue de
@@ -635,10 +643,49 @@ async function loadVideos() {
 }
 
 
+function renderSubscriberRow(sub) {
+  const statusLabel = sub.is_active ? 'Actif' : 'Désabonné';
+  const statusClass = sub.is_active ? 'sub-status--active' : 'sub-status--inactive';
+  const date = new Date(sub.subscribed_at).toLocaleDateString('fr-FR', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
+  return `
+    <tr>
+      <td>${escapeHtml(sub.email)}</td>
+      <td><span class="sub-status ${statusClass}">${statusLabel}</span></td>
+      <td>${escapeHtml(date)}</td>
+    </tr>`;
+}
+
+async function loadSubscribers() {
+  const body = document.getElementById('subscribers-body');
+  const summary = document.getElementById('newsletter-summary');
+  if (!body) return;
+  try {
+    const data = await apiGet('/api/newsletter/subscribers/');
+    const subs = data.results || [];
+    if (summary) {
+      summary.innerHTML =
+        `<strong>${data.count}</strong> abonné${data.count > 1 ? 's' : ''} · ` +
+        `<strong>${data.active_count}</strong> actif${data.active_count > 1 ? 's' : ''}`;
+    }
+    body.innerHTML = subs.length
+      ? subs.map(renderSubscriberRow).join('')
+      : '<tr><td colspan="3" class="empty-state">Aucun abonné pour le moment.</td></tr>';
+  } catch (err) {
+    console.error('Abonnés newsletter:', err);
+    const msg = String(err).includes('403') || String(err).includes('401')
+      ? 'Accès réservé aux administrateurs.'
+      : 'Impossible de charger les abonnés.';
+    body.innerHTML = `<tr><td colspan="3" class="empty-state">${msg}</td></tr>`;
+  }
+}
+
 const SECTION_LOADERS = {
   contents: loadAllContents,
   events: loadAllEvents,
   profile: loadProfileSection,
+  newsletter: loadSubscribers,
 };
 const loadedSections = new Set();
 

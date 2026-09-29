@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Tableau de Bord - Africa Fintech Inside</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
     <!-- Styles compilés depuis ../sass/dashboard.scss (sass ../sass/dashboard.scss ../css/dashboard.css) -->
+
+    <style>
+        .newsletter-summary { margin-bottom: 1rem; opacity: .85; }
+        .newsletter-table-wrapper { overflow-x: auto; }
+        .newsletter-table { width: 100%; border-collapse: collapse; }
+        .newsletter-table th,
+        .newsletter-table td {
+            text-align: left; padding: .75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+        .newsletter-table th { font-weight: 600; opacity: .7; font-size: .85rem; }
+        .sub-status {
+            display: inline-block; padding: .15rem .6rem;
+            border-radius: 999px; font-size: .8rem; font-weight: 600;
+        }
+        .sub-status--active { background: rgba(34, 197, 94, .15); color: #22c55e; }
+        .sub-status--inactive { background: rgba(148, 163, 184, .15); color: #94a3b8; }
+    </style>
 
     <!-- Mixpanel : envoie les événements pour que /api/site-stats/ ait
          quelque chose à afficher. Token = Project Token (Settings > SellMuse),
@@ -24,7 +43,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo-dashboard">
-            <img src="../logo.jpeg" alt="AFI">
+            <img src="/assets/logo.jpeg" alt="AFI">
             AFI Dashboard
         </div>
 
@@ -64,7 +83,13 @@
                     <i class="fas fa-user-circle"></i>
                     <span>Profil</span>
                     <span class="nav-badge badge-dev">EN DEV</span>
-                
+
+                </a>
+            </li>
+            <li>
+                <a data-section="newsletter">
+                    <i class="fas fa-envelope"></i>
+                    <span>Newsletter</span>
                 </a>
             </li>
 
@@ -245,6 +270,27 @@
                 <p class="empty-state">Chargement du profil…</p>
             </div>
         </section>
+
+        <!-- ===== Section: Newsletter ===== -->
+        <section id="section-newsletter" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-envelope"></i> Abonnés Newsletter</div>
+            <div class="newsletter-summary" id="newsletter-summary"></div>
+            <div class="newsletter-table-wrapper">
+                <table class="newsletter-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Statut</th>
+                            <th>Inscrit le</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribers-body">
+                        <tr><td colspan="3" class="empty-state">Chargement…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <div class="reservations-modal" id="reservations-modal">
             <div class="reservations-modal__overlay"></div>
             <div class="reservations-modal__dialog">
@@ -265,9 +311,10 @@
     <!-- ORDRE IMPORTANT : dashboardApp.js déclare SECTION_LOADERS en const ;
          community.js et stats.js y ajoutent une entrée (ils doivent donc
          être chargés APRÈS lui). notifications.js est indépendant. -->
-    <script src="../js/dashboardApp.js"></script>
-    <script src="../js/notifications.js"></script>
-    <script src="../js/community.js"></script>
-    <script src="../js/stats.js"></script>
+    <script src="/assets/js/dashboardApp.js"></script>
+    <script src="/assets/js/notifications.js"></script>
+    <script src="/assets/js/community.js"></script>
+    <script src="/assets/js/stats.js"></script>
+    <script src="/assets/js/newsletterApp.js"></script>
 </body>
 </html>

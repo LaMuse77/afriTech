@@ -39,7 +39,7 @@ form.addEventListener('submit', async (e) => {
     }
 
     localStorage.setItem(TOKEN_KEY, data.token);
-    window.location.href = 'dashboard.html';
+    window.location.href = 'pages/dashboard.html';
   } catch (err) {
     console.error(err);
     errorEl.textContent = 'Serveur injoignable. Réessaie plus tard.';
