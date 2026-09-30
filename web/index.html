@@ -3,19 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO de base -->
+    <title>Africa Fintech Inside | Média & communauté de la fintech africaine</title>
+    <meta name="description" content="Africa Fintech Inside (AFI) : média et communauté dédiés à la fintech et à la finance africaine. Interviews de CEO, analyses de marché, événements et newsletter hebdomadaire.">
+    <meta name="keywords" content="fintech Afrique, finance africaine, mobile money, paiement digital, startups africaines, investissement Afrique, régulation financière, AFI, Africa Fintech Inside">
+    <meta name="author" content="Africa Fintech Inside">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://afritech-front.onrender.com/">
+    <meta name="theme-color" content="#00381C">
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpeg">
+    <link rel="apple-touch-icon" href="assets/logo.jpeg">
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Africa Fintech Inside">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:url" content="https://afritech-front.onrender.com/">
+    <meta property="og:title" content="Africa Fintech Inside | Building Africa's Financial Future">
+    <meta property="og:description" content="La plateforme qui informe, connecte et met en lumière les acteurs qui construisent la finance africaine de demain.">
+    <meta property="og:image" content="https://afritech-front.onrender.com/assets/logo.jpeg">
+    <meta property="og:image:alt" content="Logo Africa Fintech Inside">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Africa Fintech Inside | Building Africa's Financial Future">
+    <meta name="twitter:description" content="La plateforme qui informe, connecte et met en lumière les acteurs qui construisent la finance africaine de demain.">
+    <meta name="twitter:image" content="https://afritech-front.onrender.com/assets/logo.jpeg">
+
+    <!-- Données structurées (Google) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": "https://afritech-front.onrender.com/#organization",
+                "name": "Africa Fintech Inside",
+                "alternateName": "AFI",
+                "url": "https://afritech-front.onrender.com/",
+                "logo": "https://afritech-front.onrender.com/assets/logo.jpeg",
+                "slogan": "Inform. Connect. Build.",
+                "description": "Plateforme média et communautaire dédiée à l'écosystème financier africain.",
+                "sameAs": [
+                    "https://www.youtube.com/@AfricaFintechInside"
+                ]
+            },
+            {
+                "@type": "WebSite",
+                "@id": "https://afritech-front.onrender.com/#website",
+                "url": "https://afritech-front.onrender.com/",
+                "name": "Africa Fintech Inside",
+                "inLanguage": "fr-FR",
+                "publisher": { "@id": "https://afritech-front.onrender.com/#organization" }
+            }
+        ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Africa Fintech Inside | Building Africa's Financial Future</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <header class="main-header">
-        <nav>
+        <nav aria-label="Navigation principale">
             <div class="logo">
-                <a href="#">
-                    <img src="assets/logo.jpeg" alt="Logo AFI">
+                <a href="#Hero" aria-label="Africa Fintech Inside - Accueil">
+                    <img src="assets/logo.jpeg" alt="Logo Africa Fintech Inside" width="78" height="78">
                 </a>
             </div>
             <div class="right">
@@ -173,19 +231,19 @@
                             <article class="card-item">
                                 <div class="card-badge">Networking</div>
                                 <h3>Fintech After Hours</h3>
-                                <p>Un espace de networking privilégié et informel entre dirigeants, investisseurs de premier plan, startups en croissance et experts du secteur.</p>
+                                <p class="card-desc" data-clamp>Un espace de networking privilégié et informel entre dirigeants, investisseurs de premier plan, startups en croissance et experts du secteur.</p>
                             </article>
 
                             <article class="card-item">
                                 <div class="card-badge">Stratégie</div>
                                 <h3>Executive Roundtables</h3>
-                                <p>Des discussions à huis clos autour des grands défis macroéconomiques et réglementaires de l'industrie financière africaine.</p>
+                                <p class="card-desc" data-clamp>Des discussions à huis clos autour des grands défis macroéconomiques et réglementaires de l'industrie financière africaine.</p>
                             </article>
 
                             <article class="card-item">
                                 <div class="card-badge">Annuel</div>
                                 <h3>AFI Summit</h3>
-                                <p>Le rendez-vous annuel incontournable des décideurs et des acteurs majeurs qui façonnent la finance africaine.</p>
+                                <p class="card-desc" data-clamp>Le rendez-vous annuel incontournable des décideurs et des acteurs majeurs qui façonnent la finance africaine.</p>
                             </article>
                         </div>
                     </div>
@@ -274,11 +332,52 @@
 
         <section id="Contact" class="scroll-section">
             <div class="container contact-block">
-                <ul>
-                    <li><a href="#">LinkedIn</a></li>
-                    <li><a href="#">YouTube</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">X (Twitter)</a></li>
+                <div class="section-header-center">
+                    <span class="subtitle">Contact</span>
+                    <h2>Restons connectés</h2>
+                    <p>Suivez AFI sur vos réseaux préférés et ne manquez aucune actualité de l'écosystème.</p>
+                </div>
+                <ul class="social-links">
+                    <li>
+                        <a href="#" class="social-link social-link--linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+                            <span class="social-icon"><i class="fab fa-linkedin-in"></i></span>
+                            <span class="social-text">
+                                <strong>LinkedIn</strong>
+                                <small>Réseau professionnel</small>
+                            </span>
+                            <i class="fas fa-arrow-right social-arrow"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/@AfricaFintechInside" class="social-link social-link--youtube" target="_blank" rel="noopener" aria-label="YouTube">
+                            <span class="social-icon"><i class="fab fa-youtube"></i></span>
+                            <span class="social-text">
+                                <strong>YouTube</strong>
+                                <small>@AfricaFintechInside</small>
+                            </span>
+                            <i class="fas fa-arrow-right social-arrow"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link social-link--instagram" target="_blank" rel="noopener" aria-label="Instagram">
+                            <span class="social-icon"><i class="fab fa-instagram"></i></span>
+                            <span class="social-text">
+                                <strong>Instagram</strong>
+                                <small>Coulisses & visuels</small>
+                            </span>
+                            <i class="fas fa-arrow-right social-arrow"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-link social-link--tiktok" target="_blank" rel="noopener" aria-label="TikTok">
+                            <span class="social-icon"><i class="fab fa-tiktok"></i></span>
+                            <span class="social-text">
+                                <strong>TikTok</strong>
+                                <small>Formats courts</small>
+                            </span>
+                            <i class="fas fa-arrow-right social-arrow"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </section>
@@ -326,6 +425,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/readMoreApp.js"></script>
     <script src="assets/js/carouselApp.js"></script>
     <script src="assets/js/fecthApp.js"></script>
     <script src="assets/js/reserveApp.js"></script>

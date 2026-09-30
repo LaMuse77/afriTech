@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /assets/pages/login.html
+Disallow: /assets/pages/register.html
+Disallow: /assets/pages/dashboard.html
+
+Sitemap: https://afritech-front.onrender.com/sitemap.xml
