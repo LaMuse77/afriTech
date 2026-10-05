@@ -1,11 +1,4 @@
-
-
-
-const API_BASE =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:8000'
-        : 'https://afritech-bsa6.onrender.com';
+// API_BASE et ROUTES viennent de config.js (chargé avant ce fichier).
 const TOKEN_KEY = 'afi_token';
 
 function escapeHtml(value) {
@@ -39,7 +32,7 @@ async function apiGet(path) {
 
 function logout() {
   localStorage.removeItem(TOKEN_KEY);
-  window.location.href = 'login.html';
+  window.location.href = ROUTES.login;
 }
 
 function showToast(message) {
@@ -176,7 +169,7 @@ document.addEventListener('click', (e) => {
 function renderEvent(ev) {
   const statusClass = `status-${ev.status}`;
   const right = ev.status === 'open'
-    ? `<a href="../../index.html#Evenements" class="btn btn-primary btn-sm">Réserver</a>`
+    ? `<a href="${ROUTES.home}#Evenements" class="btn btn-primary btn-sm">Réserver</a>`
     : `<span class="event-status ${statusClass}">${escapeHtml(ev.status_label)}</span>`;
   return `
     <div class="event-item">
@@ -219,6 +212,14 @@ async function loadProfile() {
     return;
   }
   renderProfileIdentity(cachedProfile);
+
+  // La section Newsletter est réservée aux admins : on masque son entrée de
+  // menu pour les membres normaux (l'API reste protégée côté serveur).
+  const newsletterLink = document.querySelector('.nav-menu a[data-section="newsletter"]');
+  if (newsletterLink && !cachedProfile.is_staff) {
+    newsletterLink.closest('li').hidden = true;
+  }
+
   initEventCreation();
 
   // Indépendants du profil : si l'un échoue, l'autre carte continue de
@@ -634,11 +635,71 @@ async function loadVideos() {
   }
 }
 
+// Accueil : les prochains événements publics (à venir uniquement).
+async function loadEvents() {
+  const list = document.getElementById('events-list');
+  if (!list) return;
+  try {
+    const data = await apiGet('/api/events/');
+    const events = (data.results || []).slice(0, 4);
+    list.innerHTML = events.length
+      ? events.map(renderEvent).join('')
+      : '<p class="empty-state">Aucun événement à venir.</p>';
+    if (events.length) revealChildren(list, 0.1);
+  } catch (err) {
+    console.error('Prochains événements:', err);
+    list.innerHTML = '<p class="empty-state">Impossible de charger les événements.</p>';
+  }
+}
+
+// ----- Newsletter -----
+// Uniquement les emails saisis dans le formulaire "AFI Weekly" de la landing
+// (modèle Subscriber). Les emails de réservation restent dans Événements >
+// Réservations : ce sont deux listes distinctes.
+
+function renderSubscriberRow(sub) {
+  const statusLabel = sub.is_active ? 'Actif' : 'Désabonné';
+  const statusClass = sub.is_active ? 'sub-status--active' : 'sub-status--inactive';
+  const date = new Date(sub.subscribed_at).toLocaleDateString('fr-FR', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
+  return `
+    <tr>
+      <td>${escapeHtml(sub.email)}</td>
+      <td><span class="sub-status ${statusClass}">${statusLabel}</span></td>
+      <td>${escapeHtml(date)}</td>
+    </tr>`;
+}
+
+async function loadSubscribers() {
+  const body = document.getElementById('subscribers-body');
+  const summary = document.getElementById('newsletter-summary');
+  if (!body) return;
+  try {
+    const data = await apiGet('/api/newsletter/subscribers/');
+    const subs = data.results || [];
+    if (summary) {
+      summary.innerHTML =
+        `<strong>${data.count}</strong> abonné${data.count > 1 ? 's' : ''} · ` +
+        `<strong>${data.active_count}</strong> actif${data.active_count > 1 ? 's' : ''}`;
+    }
+    body.innerHTML = subs.length
+      ? subs.map(renderSubscriberRow).join('')
+      : '<tr><td colspan="3" class="empty-state">Aucun abonné pour le moment.</td></tr>';
+  } catch (err) {
+    console.error('Abonnés newsletter:', err);
+    const msg = String(err).includes('403')
+      ? 'Accès réservé aux administrateurs.'
+      : 'Impossible de charger les abonnés.';
+    body.innerHTML = `<tr><td colspan="3" class="empty-state">${msg}</td></tr>`;
+  }
+}
 
 const SECTION_LOADERS = {
   contents: loadAllContents,
   events: loadAllEvents,
   profile: loadProfileSection,
+  newsletter: loadSubscribers,
 };
 const loadedSections = new Set();
 

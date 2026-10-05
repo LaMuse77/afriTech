@@ -1,15 +1,11 @@
 /* Réservation d'événements sur la landing.
    Scopé dans une IIFE pour ne pas entrer en collision avec les constantes
-   globales déjà déclarées dans fecthApp.js (API_BASE, escapeHtml...). */
+   globales des autres scripts de la landing (escapeHtml...). */
 (function () {
   'use strict';
 
 
-const API_BASE =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:8000'
-        : 'https://afritech-bsa6.onrender.com';
+// API_BASE et ROUTES viennent de config.js (chargé avant ce fichier).
 
   const modal = document.getElementById('reserve-modal');
   const form = document.getElementById('reserve-form');
@@ -67,10 +63,15 @@ const API_BASE =
       <article class="card-item">
         ${ev.badge ? `<div class="card-badge">${esc(ev.badge)}</div>` : ''}
         <h3>${esc(ev.title)}</h3>
-        <p>${esc(ev.description || '')}</p>
+        <p class="card-desc" data-clamp>${esc(ev.description || '')}</p>
         <p class="card-meta"><i class="fas fa-calendar"></i> ${formatEventDate(ev.starts_at)}${ev.location ? ' • ' + esc(ev.location) : ''}</p>
         <button type="button" class="btn btn-primary btn-sm" data-reserve data-event="${ev.id}">Réserver</button>
       </article>`).join('');
+
+    // Active le "Voir plus" sur les nouvelles descriptions.
+    if (typeof window.initReadMore === 'function') {
+      window.initReadMore(grid);
+    }
 
     // Le carrousel doit recalculer ses slides/points après l'injection.
     if (typeof window.refreshCarousel === 'function') {

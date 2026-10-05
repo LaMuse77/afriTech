@@ -750,6 +750,56 @@ body {
   padding: 1rem 0;
 }
 
+// ---------- Newsletter (abonnés du formulaire AFI Weekly) ----------
+.newsletter-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.newsletter-summary {
+  margin-bottom: 1rem;
+  opacity: 0.85;
+}
+
+.newsletter-table-wrapper {
+  overflow-x: auto;
+  background: var(--card);
+  border: 1px solid rgba($primary, 0.15);
+  border-radius: $radius;
+}
+
+.newsletter-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  th {
+    font-weight: 600;
+    opacity: 0.7;
+    font-size: 0.85rem;
+  }
+
+  tr:last-child td { border-bottom: none; }
+}
+
+.sub-status {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &--active   { background: rgba($success, 0.15); color: $success; }
+  &--inactive { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+}
+
 // ---------- Profil ----------
 .profile-card {
   background: var(--card);

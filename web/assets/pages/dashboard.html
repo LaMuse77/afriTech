@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Tableau de Bord - Africa Fintech Inside</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
     <!-- Styles compilés depuis ../sass/dashboard.scss (sass ../sass/dashboard.scss ../css/dashboard.css) -->
 
     <!-- Mixpanel : envoie les événements pour que /api/site-stats/ ait
@@ -14,17 +15,21 @@
          PAS le Project ID ni le Service Account. -->
     <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
     <script>
-        mixpanel.init("c207f032a0e8c4c07da6d487538b53c3", { persistence: "localStorage" });
-        // Événement explicite plutôt que l'autocapture : le nom est garanti
-        // identique à celui utilisé dans TRACKED_METRICS (sync_stats.py).
-        mixpanel.track("Page View", { page: "dashboard" });
+        // Garde : si le CDN Mixpanel est bloqué (adblock, hors-ligne), le
+        // dashboard ne doit pas planter.
+        if (window.mixpanel) {
+            mixpanel.init("c207f032a0e8c4c07da6d487538b53c3", { persistence: "localStorage" });
+            // Événement explicite plutôt que l'autocapture : le nom est garanti
+            // identique à celui utilisé dans TRACKED_METRICS (sync_stats.py).
+            mixpanel.track("Page View", { page: "dashboard" });
+        }
     </script>
 </head>
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo-dashboard">
-            <img src="../logo.jpeg" alt="AFI">
+            <img src="/assets/logo.jpeg" alt="AFI">
             AFI Dashboard
         </div>
 
@@ -64,7 +69,12 @@
                     <i class="fas fa-user-circle"></i>
                     <span>Profil</span>
                     <span class="nav-badge badge-dev">EN DEV</span>
-                
+                </a>
+            </li>
+            <li>
+                <a data-section="newsletter">
+                    <i class="fas fa-envelope"></i>
+                    <span>Newsletter</span>
                 </a>
             </li>
 
@@ -142,7 +152,9 @@
 
                 <div>
                     <div class="section-title"><i class="fas fa-calendar-alt"></i> Prochains événements</div>
-                  
+                    <div class="events-list" id="events-list">
+                        <p class="empty-state">Chargement…</p>
+                    </div>
                     <div class="events-list-footer">
                         <a href="#" class="btn btn-primary btn-block" data-section-link="events">Voir tous les événements</a>
                     </div>
@@ -222,6 +234,10 @@
                     </div>
                 </form>
             </div>
+
+            <div class="events-list" id="events-full">
+                <p class="empty-state">Chargement…</p>
+            </div>
         </section>
 
         <!-- ===== Section: Communauté ===== -->
@@ -245,6 +261,29 @@
                 <p class="empty-state">Chargement du profil…</p>
             </div>
         </section>
+        <!-- ===== Section: Newsletter =====
+             Uniquement les emails du formulaire "AFI Weekly" de la landing.
+             Les emails de réservation sont dans Événements > Réservations. -->
+        <section id="section-newsletter" class="dashboard-section">
+            <div class="section-title"><i class="fas fa-envelope"></i> Abonnés Newsletter</div>
+            <p class="newsletter-hint">Emails inscrits via le formulaire AFI Weekly de la landing (hors réservations d'événements).</p>
+            <div class="newsletter-summary" id="newsletter-summary"></div>
+            <div class="newsletter-table-wrapper">
+                <table class="newsletter-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Statut</th>
+                            <th>Inscrit le</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribers-body">
+                        <tr><td colspan="3" class="empty-state">Chargement…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <div class="reservations-modal" id="reservations-modal">
             <div class="reservations-modal__overlay"></div>
             <div class="reservations-modal__dialog">
@@ -265,9 +304,10 @@
     <!-- ORDRE IMPORTANT : dashboardApp.js déclare SECTION_LOADERS en const ;
          community.js et stats.js y ajoutent une entrée (ils doivent donc
          être chargés APRÈS lui). notifications.js est indépendant. -->
-    <script src="../js/dashboardApp.js"></script>
-    <script src="../js/notifications.js"></script>
-    <script src="../js/community.js"></script>
-    <script src="../js/stats.js"></script>
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/dashboardApp.js"></script>
+    <script src="/assets/js/notifications.js"></script>
+    <script src="/assets/js/community.js"></script>
+    <script src="/assets/js/stats.js"></script>
 </body>
 </html>

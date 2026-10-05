@@ -1,15 +1,10 @@
-
-const API_BASE =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:8000'
-        : 'https://afritech-bsa6.onrender.com';
+// API_BASE et ROUTES viennent de config.js (chargé avant ce fichier).
 
 const TOKEN_KEY = 'afi_token';
 
 // Déjà connecté ? On va directement au dashboard.
 if (localStorage.getItem(TOKEN_KEY)) {
-  window.location.href = 'dashboard.html';
+  window.location.href = ROUTES.dashboard;
 }
 
 const form = document.getElementById('login-form');
@@ -39,7 +34,7 @@ form.addEventListener('submit', async (e) => {
     }
 
     localStorage.setItem(TOKEN_KEY, data.token);
-    window.location.href = 'dashboard.html';
+    window.location.href = ROUTES.dashboard;
   } catch (err) {
     console.error(err);
     errorEl.textContent = 'Serveur injoignable. Réessaie plus tard.';

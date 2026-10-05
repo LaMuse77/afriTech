@@ -1,10 +1,4 @@
-
-const API_BASE =
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:8000'
-        : 'https://afritech-bsa6.onrender.com';
-// à remplacer par ton domaine en prod
+// API_BASE et ROUTES viennent de config.js (chargé avant ce fichier).
 
 const CATEGORY_BADGES = {
   spotlight: { label: 'CEO & Leaders Spotlight', class: 'badge-spotlight' },

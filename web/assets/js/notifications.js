@@ -1,11 +1,14 @@
 // Notifications calculées côté front, sans endpoint dédié :
 // - "Nouveau contenu" pour les vidéos publiées dans la fenêtre récente
 // - "Événement à venir" pour les events proches dans le temps
+// - "Nouvel abonné newsletter" (admins uniquement) : emails saisis dans le
+//   formulaire AFI Weekly de la landing — pas les réservations d'événements
 // Le statut "lu" est purement local (pas de notion d'utilisateur distant ici).
 
 const NOTIFICATIONS_READ_KEY = 'afi_notifications_read';
 const CONTENT_NOTIF_WINDOW_DAYS = 7;   // contenu publié il y a moins de 7 jours
 const EVENT_NOTIF_WINDOW_DAYS = 3;     // événement dans les 3 prochains jours
+const SUBSCRIBER_NOTIF_WINDOW_DAYS = 7; // abonné inscrit il y a moins de 7 jours
 
 let notificationsCache = [];
 
@@ -54,12 +57,38 @@ function buildEventNotifications(events) {
         }));
 }
 
+function buildSubscriberNotifications(subscribers) {
+    const now = Date.now();
+    return subscribers
+        .filter(s => s.is_active &&
+            daysBetween(now, new Date(s.subscribed_at).getTime()) <= SUBSCRIBER_NOTIF_WINDOW_DAYS)
+        .map(s => ({
+            id: `subscriber:${s.id}`,
+            title: 'Nouvel abonné newsletter',
+            message: s.email,
+            icon: 'fas fa-envelope-open-text',
+            created_at: s.subscribed_at,
+        }));
+}
+
+// Endpoint réservé aux admins : un membre normal reçoit un 403, on ignore
+// simplement cette source de notifications.
+async function fetchSubscribersSafe() {
+    try {
+        const data = await apiGet('/api/newsletter/subscribers/');
+        return data.results || [];
+    } catch {
+        return [];
+    }
+}
+
 async function buildNotifications() {
     // On réutilise apiGet, déjà défini dans dashboardApp.js — pas de nouvel
-    // endpoint, juste les deux endpoints publics existants.
-    const [contentData, eventData] = await Promise.all([
+    // endpoint, juste les endpoints existants (abonnés : admins seulement).
+    const [contentData, eventData, subscribers] = await Promise.all([
         apiGet('/api/content/?ordering=-published_at'),
         apiGet('/api/events/'),
+        fetchSubscribersSafe(),
     ]);
     const videos = contentData.results || [];
     const events = eventData.results || [];
@@ -67,6 +96,7 @@ async function buildNotifications() {
     const items = [
         ...buildContentNotifications(videos),
         ...buildEventNotifications(events),
+        ...buildSubscriberNotifications(subscribers),
     ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     const readIds = getReadIds();
