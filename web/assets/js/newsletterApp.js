@@ -92,6 +92,9 @@
 
         if (res.ok) {
           form.reset();
+          if (!data.already_subscribed && window.afiTrack) {
+            window.afiTrack('Newsletter Signup');
+          }
           const message = data.detail || 'Merci ! Votre inscription est confirmée.';
           setFeedback(feedback, message, 'success');
           showToast(

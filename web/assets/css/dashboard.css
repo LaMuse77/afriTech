@@ -370,6 +370,26 @@ body {
   letter-spacing: -0.02em;
 }
 
+.stats-group-title {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #002815;
+  margin-top: 0.5rem;
+}
+.stats-group-title:not(:first-child) {
+  margin-top: 1.25rem;
+}
+.stats-group-title span {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .stat-hint {
   font-size: 0.9rem;
   margin-top: 0.35rem;

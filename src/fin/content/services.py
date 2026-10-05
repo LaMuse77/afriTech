@@ -34,9 +34,10 @@ def fetch_channel_uploads(max_results=12):
 
     video_ids = [item['contentDetails']['videoId'] for item in playlist_response['items']]
 
-    # 3. Récupérer les détails (durée notamment) en un seul appel batché
+    # 3. Récupérer les détails (durée, compteurs) en un seul appel batché.
+    # Ajouter 'statistics' ne coûte aucune unité de quota supplémentaire.
     videos_response = youtube.videos().list(
-        part='contentDetails,snippet',
+        part='contentDetails,snippet,statistics',
         id=','.join(video_ids)
     ).execute()
 
@@ -64,6 +65,41 @@ def fetch_channel_uploads(max_results=12):
             'thumbnail_url': thumbnail['url'] if thumbnail else '',
             'published_at': snippet['publishedAt'],
             'duration': f"{minutes:02d}:{seconds:02d}",
+            'stats': _parse_statistics(item.get('statistics', {})),
         })
 
     return results
+
+
+def _parse_statistics(statistics):
+    """Convertit les compteurs YouTube (renvoyés en chaînes) en entiers.
+    Un compteur masqué par la chaîne (ex: likes désactivés) vaut 0."""
+    return {
+        'views': int(statistics.get('viewCount', 0)),
+        'likes': int(statistics.get('likeCount', 0)),
+        'comments': int(statistics.get('commentCount', 0)),
+    }
+
+
+def fetch_channel_statistics():
+    """
+    Statistiques globales de la chaîne (abonnés, vues totales, nb de vidéos).
+    Coût: 1 unité de quota.
+    """
+    youtube = get_youtube_client()
+    response = youtube.channels().list(
+        part='statistics',
+        id=settings.YOUTUBE_CHANNEL_ID
+    ).execute()
+
+    statistics = response['items'][0]['statistics']
+    return {
+        # YouTube arrondit publiquement le nombre d'abonnés (3 chiffres
+        # significatifs) ; la chaîne peut aussi choisir de le masquer.
+        'subscribers': (
+            None if statistics.get('hiddenSubscriberCount')
+            else int(statistics.get('subscriberCount', 0))
+        ),
+        'views': int(statistics.get('viewCount', 0)),
+        'videos': int(statistics.get('videoCount', 0)),
+    }

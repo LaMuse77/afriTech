@@ -19,17 +19,24 @@ def _auth_header():
 
 
 def fetch_event_counts(event_name, from_date, to_date):
+    """Compte les occurrences d'un seul événement sur une période donnée."""
+    return fetch_many_event_counts([event_name], from_date, to_date)[event_name]
+
+
+def fetch_many_event_counts(event_names, from_date, to_date):
     """
-    Compte les occurrences d'un événement sur une période donnée.
+    Compte les occurrences de plusieurs événements en UNE seule requête
+    (l'API d'export est limitée en nombre d'appels par heure).
 
     On télécharge les événements bruts (format JSONL : un objet JSON par
-    ligne) puis on compte les lignes nous-mêmes, plutôt que de demander à
-    Mixpanel un total déjà calculé (ce qui nécessiterait un plan payant).
+    ligne) puis on compte nous-mêmes par nom d'événement, plutôt que de
+    demander à Mixpanel un total déjà calculé (ce qui nécessiterait un plan
+    payant). Renvoie {nom_event: nombre}, 0 pour un event jamais reçu.
     """
     params = {
         "from_date": from_date,   # 'YYYY-MM-DD'
         "to_date": to_date,
-        "event": json.dumps([event_name]),
+        "event": json.dumps(list(event_names)),
         "project_id": settings.MIXPANEL_PROJECT_ID,
     }
     resp = requests.get(
@@ -41,8 +48,13 @@ def fetch_event_counts(event_name, from_date, to_date):
     )
     resp.raise_for_status()
 
-    count = 0
+    counts = {name: 0 for name in event_names}
     for line in resp.iter_lines():
-        if line:  # ignore les lignes vides éventuelles
-            count += 1
-    return count
+        # Lignes ignorées : vides, ou texte brut que Mixpanel renvoie à la
+        # place du JSON quand aucun événement ne correspond ("terminated early").
+        if not line or not line.lstrip().startswith(b"{"):
+            continue
+        name = json.loads(line).get("event")
+        if name in counts:
+            counts[name] += 1
+    return counts

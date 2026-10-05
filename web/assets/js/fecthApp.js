@@ -95,4 +95,23 @@ async function loadVideos() {
   }
 }
 
+/* Nombre d'abonnés YouTube du bouton "Rejoindre les X abonnés", mis à jour
+   par `manage.py sync_youtube`. En cas d'échec, on garde la valeur du HTML. */
+async function loadSubscriberCount() {
+  const target = document.getElementById('yt-subscribers');
+  if (!target) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/youtube-stats/`);
+    if (!res.ok) throw new Error(`Erreur API: ${res.status}`);
+    const stats = await res.json();
+    if (typeof stats.youtube_subscribers === 'number') {
+      target.textContent = stats.youtube_subscribers.toLocaleString('fr-FR');
+    }
+  } catch (err) {
+    console.error("Erreur lors du chargement du nombre d'abonnés:", err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', loadVideos);
+document.addEventListener('DOMContentLoaded', loadSubscriberCount);

@@ -67,6 +67,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Mixpanel : mêmes noms d'événements que TRACKED_METRICS (sync_stats.py).
+         Les clics sont suivis par assets/js/trackingApp.js. -->
+    <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+    <script>
+        if (window.mixpanel) {
+            mixpanel.init("c207f032a0e8c4c07da6d487538b53c3", { persistence: "localStorage" });
+            mixpanel.track("Page View", { page: "landing" });
+        }
+    </script>
 </head>
 <body>
     <header class="main-header">
@@ -310,8 +320,8 @@
             </div>
         </div>
         <div class="center-action youtube-cta">
-            <a href="https://www.youtube.com/@AfricaFintechInside" target="_blank" class="btn btn-primary btn-yt-style">
-                <i class="fab fa-youtube"></i> Rejoindre les 245 abonnés sur YouTube
+            <a href="https://www.youtube.com/@AfricaFintechInside" target="_blank" rel="noopener" class="btn btn-primary btn-yt-style" data-track="YouTube CTA Click" data-track-source="actualites">
+                <i class="fab fa-youtube"></i> Rejoindre les <span id="yt-subscribers">245</span> abonnés sur YouTube
             </a>
         </div>
       
@@ -349,7 +359,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://www.youtube.com/@AfricaFintechInside" class="social-link social-link--youtube" target="_blank" rel="noopener" aria-label="YouTube">
+                        <a href="https://www.youtube.com/@AfricaFintechInside" class="social-link social-link--youtube" target="_blank" rel="noopener" aria-label="YouTube" data-track="YouTube CTA Click" data-track-source="footer">
                             <span class="social-icon"><i class="fab fa-youtube"></i></span>
                             <span class="social-text">
                                 <strong>YouTube</strong>
@@ -425,6 +435,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/trackingApp.js"></script>
     <script src="assets/js/app.js"></script>
     <script src="assets/js/readMoreApp.js"></script>
     <script src="assets/js/carouselApp.js"></script>

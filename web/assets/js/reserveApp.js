@@ -150,6 +150,7 @@
         setFeedback(firstError(data) || 'Réservation impossible.', 'error');
         return;
       }
+      if (window.afiTrack) window.afiTrack('Event Registered', { event_id: eventId });
       setFeedback(data.detail || 'Réservation confirmée. Vérifiez votre email.', 'success');
       form.reset();
       setTimeout(closeModal, 2500);
